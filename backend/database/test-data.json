@@ -1,0 +1,267 @@
+{
+  "roles": {
+    "post": {
+      "name_role": "Administrador"
+    },
+    "update": {
+      "name_role": "Super Administrador"
+    }
+  },
+  "personal": {
+    "post": {
+      "name_": "Juan",
+      "last_name": "Pérez",
+      "email": "juan.perez@example.com",
+      "cell_number": "5551234567",
+      "country": "México",
+      "state_": "Jalisco",
+      "city": "Guadalajara",
+      "phone": "3339876543",
+      "address_": "Av. Revolución 123",
+      "password_": "HashedPassword123!",
+      "role_id": 1
+    },
+    "update": {
+      "name_": "Juan Carlos",
+      "last_name": "Pérez González",
+      "email": "juanc.perez@example.com",
+      "cell_number": "5559876543",
+      "country": "México",
+      "state_": "Jalisco",
+      "city": "Zapopan",
+      "phone": "3331234567",
+      "address_": "Av. Patria 456",
+      "password_": "NewHashedPassword456!",
+      "role_id": 2
+    }
+  },
+  "clients": {
+    "post": {
+      "trade_name": "Empresa XYZ",
+      "business_type": "Tecnología",
+      "phone_or_cell": "5551234567",
+      "email": "contacto@xyz.com",
+      "street": "Av. Insurgentes",
+      "number_": "100",
+      "neighborhood": "Del Valle",
+      "postal_code": "45010",
+      "city": "Guadalajara",
+      "country": "México",
+      "state_": "Jalisco",
+      "contact_name": "Ana López",
+      "contact_area_or_position": "Gerente de TI",
+      "contact_cell_phone": "5559876543",
+      "contact_email": "ana.lopez@xyz.com"
+    },
+    "update": {
+      "trade_name": "Empresa XYZ Internacional",
+      "business_type": "Tecnología y Servicios",
+      "phone_or_cell": "5551234568",
+      "email": "nuevo.contacto@xyz.com",
+      "street": "Av. Reforma",
+      "number_": "200",
+      "neighborhood": "Polanco",
+      "postal_code": "45020",
+      "city": "Ciudad de México",
+      "country": "México",
+      "state_": "CDMX",
+      "contact_name": "Carlos Ruiz",
+      "contact_area_or_position": "Director de TI",
+      "contact_cell_phone": "5559876544",
+      "contact_email": "carlos.ruiz@xyz.com"
+    }
+  },
+  "suppliers": {
+    "post": {
+      "trade_name": "Proveedor ABC",
+      "business_type": "Mayorista",
+      "cell_number": "5551234567",
+      "email": "ventas@abc.com",
+      "country": "México",
+      "state_": "Jalisco",
+      "address_": "Calle Industrial 123",
+      "city": "Guadalajara",
+      "postal_code": "45030",
+      "location_": "Parque Industrial",
+      "website": "www.abc.com",
+      "billing_name": "Proveedor ABC SA de CV",
+      "billing_number": "ABC123456789",
+      "billing_address": "Av. Fiscal 789",
+      "contact_name": "Roberto Sánchez",
+      "contact_area_or_position": "Ventas",
+      "contact_cell_phone": "5559876543",
+      "contact_email": "roberto@abc.com"
+    },
+    "update": {
+      "trade_name": "Proveedor ABC Internacional",
+      "business_type": "Mayorista Internacional",
+      "cell_number": "5551234568",
+      "email": "ventas.int@abc.com",
+      "country": "México",
+      "state_": "Nuevo León",
+      "address_": "Av. Industrial 456",
+      "city": "Monterrey",
+      "postal_code": "67000",
+      "location_": "Parque Industrial Monterrey",
+      "website": "www.abc-international.com",
+      "billing_name": "ABC Internacional SA de CV",
+      "billing_number": "ABCINT123456",
+      "billing_address": "Av. Fiscal 1000",
+      "contact_name": "María González",
+      "contact_area_or_position": "Gerente de Ventas",
+      "contact_cell_phone": "5559876544",
+      "contact_email": "maria@abc.com"
+    }
+  },
+  "contacts": {
+    "post": {
+      "name_": "Pedro",
+      "last_name": "Ramírez",
+      "position": "Gerente de Ventas",
+      "type_": "Cliente",
+      "cell_number": "5551234567",
+      "phone_number": "3339876543",
+      "email": "pedro@example.com",
+      "street": "Av. Principal",
+      "number_": "123",
+      "neighborhood": "Centro",
+      "country": "México",
+      "state_": "Jalisco",
+      "city": "Guadalajara",
+      "postal_code": "45040"
+    },
+    "update": {
+      "name_": "Pedro Luis",
+      "last_name": "Ramírez Valle",
+      "position": "Director de Ventas",
+      "type_": "Cliente VIP",
+      "cell_number": "5551234568",
+      "phone_number": "3339876544",
+      "email": "pedro.luis@example.com",
+      "street": "Av. Secundaria",
+      "number_": "456",
+      "neighborhood": "Providencia",
+      "country": "México",
+      "state_": "Jalisco",
+      "city": "Guadalajara",
+      "postal_code": "45050"
+    }
+  },
+  "categories": {
+    "post": {
+      "name_": "Hardware"
+    },
+    "update": {
+      "id_category": 1,
+      "name_": "Hardware y Periféricos"
+    }
+  },
+  "products": {
+    "post": {
+      "name_": "Laptop Pro X",
+      "category_id": 1,
+      "unit": "Pieza",
+      "description_": "Laptop de última generación",
+      "sale_price": 25000.0,
+      "model": "LPX2023",
+      "factory_code": "LP123456",
+      "supplier_id": 1,
+      "manufacturer_brand": "TechBrand",
+      "initial_stock": 50,
+      "minimum_stock": 10,
+      "product_image": "laptop.jpg"
+    },
+    "update": {
+      "name_": "Laptop Pro X Plus",
+      "category_id": 1,
+      "unit": "Pieza",
+      "description_": "Laptop de última generación con mejoras",
+      "sale_price": 27000.0,
+      "model": "LPX2023+",
+      "factory_code": "LP123457",
+      "supplier_id": 1,
+      "manufacturer_brand": "TechBrand Pro",
+      "initial_stock": 75,
+      "minimum_stock": 15,
+      "product_image": "laptop_plus.jpg"
+    }
+  },
+  "services": {
+    "post": {
+      "name_": "Mantenimiento Preventivo",
+      "category_id": 1,
+      "sale_price": 1500.0,
+      "description_": "Servicio de mantenimiento preventivo de equipos",
+      "sat_unit": "E48",
+      "sat_code": "12345678"
+    },
+    "update": {
+      "name_": "Mantenimiento Preventivo Plus",
+      "category_id": 1,
+      "sale_price": 2000.0,
+      "description_": "Servicio de mantenimiento preventivo de equipos con diagnóstico avanzado",
+      "sat_unit": "E48",
+      "sat_code": "12345679"
+    }
+  },
+  "services_orders": {
+    "post": {
+      "client_id": 1,
+      "service_id": 1,
+      "personal_id": 1,
+      "contact_name": "Luis Torres",
+      "contact_phone": "5551234567",
+      "contact_email": "luis@example.com",
+      "scheduled_date": "2025-11-01",
+      "start_time": "09:00:00",
+      "end_time": "12:00:00",
+      "price": 1500.0,
+      "activities": "1. Revisión general\\n2. Limpieza de equipos\\n3. Actualización de software",
+      "recomendations": "Realizar respaldo de información antes del servicio",
+      "files": "orden_servicio_1.pdf",
+      "notes": "Cliente requiere atención prioritaria",
+      "state_": "Programada",
+      "products": "[{\"id\":1,\"quantity\":2}]"
+    },
+    "update": {
+      "client_id": 1,
+      "service_id": 1,
+      "personal_id": 2,
+      "contact_name": "Luis Alberto Torres",
+      "contact_phone": "5551234568",
+      "contact_email": "luis.torres@example.com",
+      "scheduled_date": "2025-11-02",
+      "start_time": "10:00:00",
+      "end_time": "13:00:00",
+      "price": 2000.0,
+      "activities": "1. Revisión general avanzada\\n2. Limpieza profunda de equipos\\n3. Actualización de software y firmware",
+      "recomendations": "Realizar respaldo de información y tener equipos apagados",
+      "files": "orden_servicio_1_actualizada.pdf",
+      "notes": "Cliente VIP - atención prioritaria",
+      "state_": "En proceso",
+      "products": "[{\"id\":1,\"quantity\":3},{\"id\":2,\"quantity\":1}]"
+    }
+  },
+  "tasks": {
+    "post": {
+      "title": "Instalación de Software",
+      "client_id": 1,
+      "description_": "Instalar suite de software en equipos nuevos",
+      "date_": "2025-11-01",
+      "start_time": "10:00:00",
+      "end_time": "13:00:00",
+      "assigned_to": 1,
+      "status_": "Pendiente"
+    },
+    "update": {
+      "title": "Instalación y Configuración de Software",
+      "client_id": 1,
+      "description_": "Instalar y configurar suite completa de software en equipos nuevos",
+      "date_": "2025-11-02",
+      "start_time": "09:00:00",
+      "end_time": "14:00:00",
+      "assigned_to": 2,
+      "status_": "En progreso"
+    }
+  }
+}

@@ -18,11 +18,11 @@ const Sidebar = () => {
     { to: "/contactos", label: "Contactos", icon: "fas fa-address-book" },
     { to: "/categorias", label: "Categorías", icon: "fas fa-list" },
     { to: "/inventario", label: "Inventario", icon: "fas fa-box" },
-    { to: "/servicios", label: "Servicios", icon: "fas fa-concierge-bell" },
+    { to: "/servicios", label: "Servicios", icon: "fas fa-tools" },
     {
       to: "/ordenes-servicio",
       label: "Ordenes de Servicio",
-      icon: "fas fa-tools",
+      icon: "fas fa-bell",
     },
   ];
 

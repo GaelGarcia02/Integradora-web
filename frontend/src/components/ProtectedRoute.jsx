@@ -10,10 +10,12 @@ function ProtectedRoute() {
   }
 
   return (
-    <div className="contenedor">
+    <div className="flex h-screen ">
       <Sidebar />
-      <div className="content">
-        <Outlet />
+      <div className="flex-1 h-screen overflow-auto">
+        <div className="p-4 md:p-6">
+          <Outlet />
+        </div>
       </div>
     </div>
   );

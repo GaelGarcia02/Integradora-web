@@ -7,7 +7,7 @@ export const loginRequest = async (userData) => {
     const response = await axios.post(`${route}/login`, userData, {
       withCredentials: true,
     });
-    console.log("Datos enviados:", userData);
+    // console.log("Datos enviados:", userData);
     return response;
   } catch (error) {
     console.error("Error en la solicitud de login:", error);

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import logo from "../assets/logo.jpg";
 import { useAuth } from "../context/AuthContext";
+import { cerrarSesion } from "../utils/sweetAlert";
 
 const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -27,9 +28,9 @@ const Sidebar = () => {
 
   return (
     <aside
-      className={`fixed top-0 left-0 z-30 h-screen transform transition-all duration-200 ease-in-out`}
+      className={`h-screen shrink-0 transition-all duration-200 ease-in-out`}
       aria-hidden={false}
-      style={{ width: isCollapsed ? "4.5rem" : "18rem" }}
+      style={{ width: isCollapsed ? "4.5rem" : "16rem" }}
     >
       <div
         className="flex flex-col h-full"
@@ -39,7 +40,7 @@ const Sidebar = () => {
           className={`flex items-center justify-between px-3 py-3 border-b transition-all ${
             isCollapsed ? "justify-center" : ""
           }`}
-          style={{ borderColor: "rgba(255,199,44,0.12)" }}
+          style={{ borderColor: "rgba(255,199,44, 0.30)" }}
         >
           <div
             className={`flex items-center gap-3 ${
@@ -141,12 +142,12 @@ const Sidebar = () => {
 
         <div
           className="px-3 py-3 border-t transition-all"
-          style={{ borderColor: "rgba(255,199,44,0.08)" }}
+          style={{ borderColor: "rgba(255,199,44,0.30)" }}
         >
           {!isCollapsed ? (
             <button
               className="w-full py-2 rounded-md bg-white text-[#0159B3] font-semibold hover:opacity-95 transition flex items-center justify-center gap-2"
-              onClick={logout}
+              onClick={() => cerrarSesion(logout)}
               title="Cerrar sesión"
             >
               <i className="fas fa-sign-out-alt" aria-hidden="true"></i>
@@ -156,7 +157,7 @@ const Sidebar = () => {
             <div className="flex items-center justify-center">
               <button
                 className="p-3 rounded-md bg-white text-[#0159B3] hover:opacity-95 transition"
-                onClick={logout}
+                onClick={() => cerrarSesion(logout)}
                 title="Cerrar sesión"
                 aria-label="Cerrar sesión"
               >

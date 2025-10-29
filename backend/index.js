@@ -20,7 +20,7 @@ const app = express();
 // 8081 incluir para la conexion con el frontend y la aplicacion movil
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://localhost:8081"],
+    origin: ["http://localhost:5173", "http://localhost:8081"],
     credentials: true,
   })
 );

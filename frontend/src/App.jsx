@@ -14,11 +14,17 @@ import ServiceOrdersPage from "./pages/ServiceOrdersPage";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
+import { PersonalProvider } from "./context/PersonalContext";
+import { RolesProvider } from "./context/RolesContext";
 
 function App() {
   return (
     <AuthProvider>
-      <AppContent />
+      <PersonalProvider>
+        <RolesProvider>
+          <AppContent />
+        </RolesProvider>
+      </PersonalProvider>
     </AuthProvider>
   );
 }

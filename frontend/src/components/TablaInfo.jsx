@@ -2,6 +2,7 @@ import React, { useCallback, useState, useEffect } from "react";
 import BotonEditarModal from "./Buttons/BotonEditarModal";
 import BotonUrl from "./Buttons/BotonUrl";
 import FormularioPersonal from "./Forms/FormularioPersonal";
+import FormularioClientes from "./Forms/FormularioClientes";
 
 const TablaInfo = ({
   columns,
@@ -20,7 +21,7 @@ const TablaInfo = ({
   const [sortColumn, setSortColumn] = useState(
     columns.find((col) => !hiddenColumns.includes(col))
   );
-  const [sortDirection, setSortDirection] = useState("asc");
+  const [sortDirection, setSortDirection] = useState("desc");
 
   // Actualiza datos filtrados al cambiar el data
   useEffect(() => {
@@ -33,26 +34,33 @@ const TablaInfo = ({
 
     if (searchTerm.trim() !== "") {
       const lowerSearch = searchTerm.toLowerCase();
-      filtered = data.filter(
-        (row) =>
-          (row.name_ && row.name_.toLowerCase().includes(lowerSearch)) ||
-          (row.last_name && row.last_name.toLowerCase().includes(lowerSearch))
-      );
+      filtered = data.filter((row) => {
+        // Buscar en todas las columnas visibles
+        return columns
+          .filter((col) => !hiddenColumns.includes(col))
+          .some((col) => {
+            const value = row[col];
+            // Verificar si el valor existe y convertirlo a string
+            return (
+              value && value.toString().toLowerCase().includes(lowerSearch)
+            );
+          });
+      });
     }
 
     // Ordenar según columna seleccionada
     filtered = [...filtered].sort((a, b) => {
       const valA = a[sortColumn]?.toString().toLowerCase() || "";
       const valB = b[sortColumn]?.toString().toLowerCase() || "";
-      if (valA < valB) return sortDirection === "asc" ? -1 : 1;
-      if (valA > valB) return sortDirection === "asc" ? 1 : -1;
+      if (valA < valB) return sortDirection === "asc" ? 1 : -1;
+      if (valA > valB) return sortDirection === "asc" ? -1 : 1;
       return 0;
     });
 
     setFilteredData(filtered);
-  }, [searchTerm, data, sortColumn, sortDirection]);
+  }, [searchTerm, data, sortColumn, sortDirection, columns, hiddenColumns]);
 
-  // 🧮 Paginación
+  // Paginación
   const totalPages = Math.ceil(filteredData.length / rowsPerPage);
   const paginatedData = filteredData.slice(
     (currentPage - 1) * rowsPerPage,
@@ -68,7 +76,6 @@ const TablaInfo = ({
       setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
     } else {
       setSortColumn(column);
-      setSortDirection("asc");
     }
   };
 
@@ -77,6 +84,8 @@ const TablaInfo = ({
     switch (formType) {
       case "personal":
         return <FormularioPersonal id_personal={id} />;
+      case "clients":
+        return <FormularioClientes id_cliente={id} />;
       default:
         return null;
     }
@@ -87,6 +96,8 @@ const TablaInfo = ({
       switch (formType) {
         case "personal":
           return row.id_personal;
+        case "clients":
+          return row.id_client;
         default:
           return null;
       }
@@ -107,7 +118,7 @@ const TablaInfo = ({
               setSearchTerm(e.target.value);
               setCurrentPage(1);
             }}
-            placeholder="Buscar por nombre o apellido..."
+            placeholder="Buscar..."
             className="w-full sm:w-72 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:ring-2 focus:ring-[#0159B3] focus:border-[#0159B3]"
           />
         </div>
@@ -135,7 +146,11 @@ const TablaInfo = ({
             }
             className="text-[#0159B3] text-sm font-semibold hover:underline"
           >
-            {sortDirection === "asc" ? "↑" : "↓"}
+            <i
+              className={`fas fa-arrow-${
+                sortDirection === "asc" ? "up" : "down"
+              }`}
+            ></i>
           </button>
         </div>
       </div>

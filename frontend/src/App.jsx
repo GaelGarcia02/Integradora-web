@@ -13,16 +13,20 @@ import ServicesPage from "./pages/ServicesPage";
 import ServiceOrdersPage from "./pages/ServiceOrdersPage";
 
 import ProtectedRoute from "./components/ProtectedRoute";
+
 import { AuthProvider } from "./context/AuthContext";
 import { PersonalProvider } from "./context/PersonalContext";
 import { RolesProvider } from "./context/RolesContext";
+import { ClientsProvider } from "./context/ClientsContext";
 
 function App() {
   return (
     <AuthProvider>
       <PersonalProvider>
         <RolesProvider>
-          <AppContent />
+          <ClientsProvider>
+            <AppContent />
+          </ClientsProvider>
         </RolesProvider>
       </PersonalProvider>
     </AuthProvider>

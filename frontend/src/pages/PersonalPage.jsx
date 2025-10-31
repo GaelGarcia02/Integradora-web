@@ -3,7 +3,6 @@ import TablaInfo from "../components/TablaInfo";
 import BotonModal from "../components/Buttons/BotonModal";
 import FormularioPersonal from "../components/Forms/FormularioPersonal";
 import { usePersonal } from "../context/PersonalContext";
-import BotonPDF from "../components/Buttons/BotonPDF";
 
 const PersonalPage = () => {
   const { personalRole, getPersonalRole } = usePersonal();
@@ -24,25 +23,13 @@ const PersonalPage = () => {
       <hr className="mb-6 border-gray-300" />
 
       {/* --- Encabezado con botones --- */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center mb-6">
         <div>
           <BotonModal
             nombreBoton="Nuevo Personal"
             icono="fas fa-plus"
             contenidoModal={<FormularioPersonal />}
             titulo="Nuevo Personal"
-          />
-        </div>
-        <div>
-          <BotonPDF
-            pageTitle={"Personal"}
-            columns={{
-              name_: "Nombre",
-              last_name: "Apellido",
-              cell_number: "Celular",
-              name_role: "Rol",
-            }}
-            data={personalRole}
           />
         </div>
       </div>

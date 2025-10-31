@@ -13,7 +13,6 @@ const validationSchema = Yup.object().shape({
     .typeError("Seleccione un rol")
     .required("Seleccione un rol")
     .integer("Debe ser un número entero"),
-  title: Yup.string(),
   email: Yup.string()
     .email("Correo electrónico inválido")
     .required("Este campo es obligatorio"),
@@ -35,7 +34,6 @@ const emptyValues = {
   name_: "",
   last_name: "",
   role_id: "",
-  title: "",
   email: "",
   cell_number: "",
   country: "",
@@ -175,7 +173,7 @@ const FormularioPersonal = ({ id_personal }) => {
                   errors.role_id ? errorInput : normalInput
                 }`}
               >
-                <option value="">Seleccione un rol</option>
+                <option value="">-- Seleccione un rol --</option>
                 {roles.map((rol) => (
                   <option key={rol.id_role} value={rol.id_role}>
                     {rol.name_role}
@@ -188,16 +186,6 @@ const FormularioPersonal = ({ id_personal }) => {
             </div>
 
             {/* Título */}
-            <div>
-              <label htmlFor="title" className={label}>
-                Título
-              </label>
-              <input
-                id="title"
-                {...register("title")}
-                className={`${baseInput} ${normalInput}`}
-              />
-            </div>
           </div>
         </section>
 

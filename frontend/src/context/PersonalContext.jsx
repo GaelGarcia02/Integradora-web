@@ -66,6 +66,7 @@ export const PersonalProvider = ({ children }) => {
 
   const updatePersonal = async (id, personalData) => {
     try {
+      console.log(personalData);
       await updatePersonalRequest(id, personalData);
       const updatedPersonal = personal.map((p) =>
         p.id === id ? { ...p, ...personalData } : p

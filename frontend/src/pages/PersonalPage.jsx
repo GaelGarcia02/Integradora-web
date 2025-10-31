@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import TablaInfo from "../components/TablaInfo";
 import BotonModal from "../components/Buttons/BotonModal";
 import FormularioPersonal from "../components/Forms/FormularioPersonal";
-import Header from "../components/Header";
 import { usePersonal } from "../context/PersonalContext";
 import BotonPDF from "../components/Buttons/BotonPDF";
 
@@ -31,7 +30,7 @@ const PersonalPage = () => {
             nombreBoton="Nuevo Personal"
             icono="fas fa-plus"
             contenidoModal={<FormularioPersonal />}
-            titulo="Agregar Nuevo Personal"
+            titulo="Nuevo Personal"
           />
         </div>
         <div>

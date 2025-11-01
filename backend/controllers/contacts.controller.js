@@ -38,7 +38,6 @@ export const createContact = async (req, res) => {
       name_,
       last_name,
       position,
-      type_,
       cell_number,
       phone_number,
       email,
@@ -52,12 +51,11 @@ export const createContact = async (req, res) => {
     } = req.body;
 
     const [result] = await pool.query(
-      "INSERT INTO contacts(name_, last_name, position, type_, cell_number, phone_number, email, street, number_, neighborhood, country, state_, city, postal_code) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      "INSERT INTO contacts(name_, last_name, position, cell_number, phone_number, email, street, number_, neighborhood, country, state_, city, postal_code) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
       [
         name_,
         last_name,
         position,
-        type_,
         cell_number,
         phone_number,
         email,

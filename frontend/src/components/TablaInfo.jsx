@@ -1,8 +1,13 @@
 import React, { useCallback, useState, useEffect } from "react";
+
+// Botones
 import BotonEditarModal from "./Buttons/BotonEditarModal";
 import BotonUrl from "./Buttons/BotonUrl";
+
+//Formularios
 import FormularioPersonal from "./Forms/FormularioPersonal";
 import FormularioClientes from "./Forms/FormularioClientes";
+import FormularioProveedores from "./Forms/FormularioProveedores";
 
 const TablaInfo = ({
   columns,
@@ -28,7 +33,7 @@ const TablaInfo = ({
     setFilteredData(data);
   }, [data]);
 
-  // Filtro: busca por nombre o apellido
+  // Filtro de busqueda
   useEffect(() => {
     let filtered = data;
 
@@ -86,6 +91,8 @@ const TablaInfo = ({
         return <FormularioPersonal id_personal={id} />;
       case "clients":
         return <FormularioClientes id_cliente={id} />;
+      case "suppliers":
+        return <FormularioProveedores id_supplier={id} />;
       default:
         return null;
     }
@@ -98,6 +105,8 @@ const TablaInfo = ({
           return row.id_personal;
         case "clients":
           return row.id_client;
+        case "suppliers":
+          return row.id_supplier;
         default:
           return null;
       }

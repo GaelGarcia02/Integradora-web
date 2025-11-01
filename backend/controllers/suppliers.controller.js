@@ -53,7 +53,7 @@ export const createSupplier = async (req, res) => {
     } = req.body;
 
     const [result] = await pool.query(
-      "INSERT INTO suppliers(trade_name, business_type, cell_number, email, country, state_, address_, city, postal_code, location_, website, billing_name, billing_number, billing_address, contact_name, contact_area_or_position, contact_cell_phone, contact_email) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      "INSERT INTO suppliers(trade_name, business_type, cell_number, email, country, state_, address_, city, postal_code, website, billing_name, billing_number, billing_address, contact_name, contact_area_or_position, contact_cell_phone, contact_email) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
       [
         trade_name,
         business_type,
@@ -64,7 +64,6 @@ export const createSupplier = async (req, res) => {
         address_,
         city,
         postal_code,
-        location_,
         website,
         billing_name,
         billing_number,

@@ -18,6 +18,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { PersonalProvider } from "./context/PersonalContext";
 import { RolesProvider } from "./context/RolesContext";
 import { ClientsProvider } from "./context/ClientsContext";
+import { SuppliersProvider } from "./context/SuppliersContext";
 
 function App() {
   return (
@@ -25,7 +26,9 @@ function App() {
       <PersonalProvider>
         <RolesProvider>
           <ClientsProvider>
-            <AppContent />
+            <SuppliersProvider>
+              <AppContent />
+            </SuppliersProvider>
           </ClientsProvider>
         </RolesProvider>
       </PersonalProvider>

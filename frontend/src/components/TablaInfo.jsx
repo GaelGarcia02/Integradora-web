@@ -8,6 +8,7 @@ import BotonUrl from "./Buttons/BotonUrl";
 import FormularioPersonal from "./Forms/FormularioPersonal";
 import FormularioClientes from "./Forms/FormularioClientes";
 import FormularioProveedores from "./Forms/FormularioProveedores";
+import FormularioContactos from "./Forms/FormularioContactos";
 
 const TablaInfo = ({
   columns,
@@ -93,6 +94,8 @@ const TablaInfo = ({
         return <FormularioClientes id_cliente={id} />;
       case "suppliers":
         return <FormularioProveedores id_supplier={id} />;
+      case "contacts":
+        return <FormularioContactos id_contact={id} />;
       default:
         return null;
     }
@@ -107,6 +110,8 @@ const TablaInfo = ({
           return row.id_client;
         case "suppliers":
           return row.id_supplier;
+        case "contacts":
+          return row.id_contact;
         default:
           return null;
       }

@@ -27,7 +27,7 @@ const validationSchema = Yup.object().shape({
     .required("Este campo es obligatorio"),
 });
 
-const FormularioClientes = ({ id_cliente }) => {
+const FormularioClientes = ({ id_client }) => {
   const { getClient, createClient, updateClient } = useClients();
 
   const emptyValues = {
@@ -72,9 +72,9 @@ const FormularioClientes = ({ id_cliente }) => {
   // Efecto para cargar los datos del cliente cuando se edita
   useEffect(() => {
     const fetchClientData = async () => {
-      if (id_cliente) {
+      if (id_client) {
         try {
-          const clientData = await getClient(id_cliente);
+          const clientData = await getClient(id_client);
           if (clientData) {
             // Reiniciar el formulario con los datos del cliente
             reset(clientData);
@@ -96,12 +96,12 @@ const FormularioClientes = ({ id_cliente }) => {
     };
 
     fetchClientData();
-  }, [id_cliente, getClient, reset]);
+  }, [id_client, getClient, reset]);
 
   const onSubmit = async (data) => {
     try {
-      if (id_cliente) {
-        await updateClient(id_cliente, data);
+      if (id_client) {
+        await updateClient(id_client, data);
         Swal.fire({
           icon: "success",
           title: "Cliente actualizado correctamente",
@@ -131,7 +131,7 @@ const FormularioClientes = ({ id_cliente }) => {
   return (
     <div className="max-w-5xl mx-auto bg-white p-8 mt-2 rounded-2xl shadow-md">
       <h2 className="text-2xl font-bold text-[#0159B3] mb-4">
-        {id_cliente ? "Editar Cliente" : "Registrar Cliente"}
+        {id_client ? "Editar Cliente" : "Registrar Cliente"}
       </h2>
       <p className="text-gray-500 text-sm mb-6">
         Complete el formulario | (*) Campos obligatorios
@@ -435,7 +435,7 @@ const FormularioClientes = ({ id_cliente }) => {
             className="w-full bg-[#0159B3] text-white py-3 rounded-lg font-semibold hover:bg-blue-800 transition duration-150 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={!isValid || !isDirty}
           >
-            {id_cliente ? "Actualizar Cliente" : "Registrar Cliente"}
+            {id_client ? "Actualizar Cliente" : "Registrar Cliente"}
           </button>
         </div>
       </form>

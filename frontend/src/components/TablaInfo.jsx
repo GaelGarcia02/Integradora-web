@@ -9,6 +9,8 @@ import FormularioPersonal from "./Forms/FormularioPersonal";
 import FormularioClientes from "./Forms/FormularioClientes";
 import FormularioProveedores from "./Forms/FormularioProveedores";
 import FormularioContactos from "./Forms/FormularioContactos";
+import FormularioCategorias from "./Forms/FormularioCategorias";
+import FormularioServicios from "./Forms/FormularioServicios";
 
 const TablaInfo = ({
   columns,
@@ -87,15 +89,20 @@ const TablaInfo = ({
 
   // Obtiene el componente de formulario correspondiente
   const obtenerComponenteFormulario = useCallback((formType, id) => {
+    console.log("Form type:", formType, "ID:", id);
     switch (formType) {
       case "personal":
         return <FormularioPersonal id_personal={id} />;
       case "clients":
-        return <FormularioClientes id_cliente={id} />;
+        return <FormularioClientes id_client={id} />;
       case "suppliers":
         return <FormularioProveedores id_supplier={id} />;
       case "contacts":
         return <FormularioContactos id_contact={id} />;
+      case "categories":
+        return <FormularioCategorias id_category={id} />;
+      case "services":
+        return <FormularioServicios id_service={id} />;
       default:
         return null;
     }
@@ -112,6 +119,10 @@ const TablaInfo = ({
           return row.id_supplier;
         case "contacts":
           return row.id_contact;
+        case "categories":
+          return row.id_category;
+        case "services":
+          return row.id_service;
         default:
           return null;
       }
@@ -171,13 +182,13 @@ const TablaInfo = ({
 
       {/* Tabla */}
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200 text-sm">
+        <table className="min-w-full divide-y text-center divide-gray-200 text-sm">
           <thead className="bg-gray-100 text-gray-700 uppercase text-xs font-semibold tracking-wider">
             <tr>
               {columns.map(
                 (col, i) =>
                   !hiddenColumns.includes(col) && (
-                    <th key={i} className="px-6 py-3 text-left">
+                    <th key={i} className="px-6 py-3">
                       {customColumnNames[col] || col}
                     </th>
                   )

@@ -20,6 +20,8 @@ import { RolesProvider } from "./context/RolesContext";
 import { ClientsProvider } from "./context/ClientsContext";
 import { SuppliersProvider } from "./context/SuppliersContext";
 import { ContactsProvider } from "./context/ContactsContext";
+import { ServicesProvider } from "./context/ServicesContext";
+import { CategoriesProvider } from "./context/CategoriesContext";
 
 function App() {
   return (
@@ -29,7 +31,11 @@ function App() {
           <ClientsProvider>
             <SuppliersProvider>
               <ContactsProvider>
-                <AppContent />
+                <ServicesProvider>
+                  <CategoriesProvider>
+                    <AppContent />
+                  </CategoriesProvider>
+                </ServicesProvider>
               </ContactsProvider>
             </SuppliersProvider>
           </ClientsProvider>

@@ -5,7 +5,7 @@ import FormularioContactos from "../components/Forms/FormularioContactos";
 import { useContacts } from "../context/ContactsContext";
 
 const ContactsPage = () => {
-  const { contacts, getContacts } = useContacts();
+  const { contacts, getContacts, deleteContact } = useContacts();
   const columnNames = ["id_contact", "name_", "cell_number", "email"];
 
   useEffect(() => {
@@ -46,6 +46,7 @@ const ContactsPage = () => {
           email: "Correo electrónico",
         }}
         formType="contacts"
+        onDelete={deleteContact}
       />
     </div>
   );

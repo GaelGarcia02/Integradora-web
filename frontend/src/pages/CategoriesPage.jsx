@@ -5,7 +5,7 @@ import FormularioCategorias from "../components/Forms/FormularioCategorias";
 import { useCategories } from "../context/CategoriesContext.jsx";
 
 const CategoriesPage = () => {
-  const { categories, getCategories } = useCategories();
+  const { categories, getCategories, deleteCategory } = useCategories();
   const columnNames = ["id_category", "name_"];
 
   useEffect(() => {
@@ -44,6 +44,7 @@ const CategoriesPage = () => {
           name_: "Nombre",
         }}
         formType="categories"
+        onDelete={deleteCategory}
       />
     </div>
   );

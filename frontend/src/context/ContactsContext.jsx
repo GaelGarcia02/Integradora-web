@@ -81,6 +81,7 @@ export const ContactsProvider = ({ children }) => {
     try {
       await deleteContactRequest(id);
       setContacts((prevContacts) => prevContacts.filter((ct) => ct.id !== id));
+      getContacts();
     } catch (err) {
       setError(err);
     } finally {

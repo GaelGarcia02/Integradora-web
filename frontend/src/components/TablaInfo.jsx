@@ -1,4 +1,5 @@
 import React, { useCallback, useState, useEffect } from "react";
+import Swal from "sweetalert2";
 
 // Botones
 import BotonEditarModal from "./Buttons/BotonEditarModal";
@@ -22,6 +23,7 @@ const TablaInfo = ({
   rowsPerPage = 15,
   specialPages = false,
   baseUrl = "",
+  onDelete, // Add this new prop
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [filteredData, setFilteredData] = useState(data);
@@ -84,6 +86,29 @@ const TablaInfo = ({
       setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
     } else {
       setSortColumn(column);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      const result = await Swal.fire({
+        title: "¿Estás seguro?",
+        text: "Esta acción no se puede deshacer",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "Cancelar",
+      });
+
+      if (result.isConfirmed && onDelete) {
+        await onDelete(id);
+        Swal.fire("Eliminado", "El registro ha sido eliminado.", "success");
+      }
+    } catch (error) {
+      console.error("Error al eliminar:", error);
+      Swal.fire("Error", "No se pudo eliminar el registro.", "error");
     }
   };
 
@@ -182,7 +207,7 @@ const TablaInfo = ({
 
       {/* Tabla */}
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y text-center divide-gray-200 text-sm">
+        <table className="min-w-full divide-y divide-gray-200 text-sm">
           <thead className="bg-gray-100 text-gray-700 uppercase text-xs font-semibold tracking-wider">
             <tr>
               {columns.map(
@@ -207,13 +232,16 @@ const TablaInfo = ({
                   {columns.map(
                     (col, j) =>
                       !hiddenColumns.includes(col) && (
-                        <td key={j} className="px-6 py-3 text-gray-700">
+                        <td
+                          key={j}
+                          className="px-6 py-3 text-gray-700 text-center"
+                        >
                           {row[col]}
                         </td>
                       )
                   )}
                   <td className="px-6 py-3">
-                    <div className="flex justify-center">
+                    <div className="flex justify-center gap-2">
                       {specialPages ? (
                         <BotonUrl
                           nombreBoton="Editar"
@@ -225,18 +253,33 @@ const TablaInfo = ({
                           className="bg-[#0159B3] hover:bg-[#014a94] text-white px-3 py-1 rounded-md text-sm shadow-sm transition"
                         />
                       ) : (
-                        <BotonEditarModal
-                          nombreBoton="Editar"
-                          icono="bi bi-pencil"
-                          contenidoModal={() =>
-                            obtenerComponenteFormulario(
-                              formType,
-                              obtenerIdParaFormulario(formType, row)
-                            )
-                          }
-                          className="bg-[#0159B3] hover:bg-[#014a94] text-white px-3 py-1 rounded-md text-sm shadow-sm transition"
-                          titulo="Editar Información"
-                        />
+                        <>
+                          <BotonEditarModal
+                            nombreBoton="Editar"
+                            icono="bi bi-pencil"
+                            contenidoModal={() =>
+                              obtenerComponenteFormulario(
+                                formType,
+                                obtenerIdParaFormulario(formType, row)
+                              )
+                            }
+                            className="bg-[#0159B3] hover:bg-[#014a94] text-white px-3 py-1 rounded-md text-sm shadow-sm transition"
+                            titulo="Editar Información"
+                          />
+                          {onDelete && (
+                            <button
+                              onClick={() =>
+                                handleDelete(
+                                  obtenerIdParaFormulario(formType, row)
+                                )
+                              }
+                              className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md text-sm shadow-sm transition flex items-center gap-1"
+                            >
+                              <i className="bi bi-trash"></i>
+                              Eliminar
+                            </button>
+                          )}
+                        </>
                       )}
                     </div>
                   </td>

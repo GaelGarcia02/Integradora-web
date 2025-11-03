@@ -124,13 +124,22 @@ const FormularioCategorias = ({ id_category }) => {
         </section>
 
         {/* 🔹 Botón */}
-        <div className="pt-4 border-t border-gray-200">
+        <div className="flex justify-end gap-4">
           <button
             type="submit"
-            className="w-full bg-[#0159B3] text-white py-3 rounded-lg font-semibold hover:bg-blue-800 transition duration-150 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 py-2 bg-[#0159B3] text-white rounded-lg shadow-md hover:bg-[#01447a] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={!isValid || !isDirty}
           >
-            {id_category ? "Actualizar Categoría" : "Registrar Categoría"}
+            <i className="fas fa-save mr-2"></i>
+            Guardar
+          </button>
+          <button
+            type="button"
+            onClick={() => reset(emptyValues)}
+            className="px-4 py-2 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 transition-all duration-200"
+          >
+            <i className="fas fa-eraser mr-2"></i>
+            Limpiar
           </button>
         </div>
       </form>

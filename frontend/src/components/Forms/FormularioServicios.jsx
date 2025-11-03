@@ -168,9 +168,6 @@ const FormularioServicio = ({ id_service }) => {
 
         {/* 🔹 Precio y descripción */}
         <section>
-          <h3 className="text-lg font-semibold text-gray-800 mb-3">
-            Precio y descripción
-          </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label htmlFor="sale_price" className={label}>
@@ -188,22 +185,23 @@ const FormularioServicio = ({ id_service }) => {
                 <p className={errorText}>{errors.sale_price.message}</p>
               )}
             </div>
-          </div>
-          <div className="mb-4">
-            <label htmlFor="description_" className={label}>
-              Descripción *
-            </label>
-            <textarea
-              id="description_"
-              {...register("description_")}
-              className={`${baseInput} ${
-                errors.description_ ? errorInput : normalInput
-              }`}
-              rows="3"
-            ></textarea>
-            {errors.description_ && (
-              <p className={errorText}>{errors.description_.message}</p>
-            )}
+
+            <div className="mb-4">
+              <label htmlFor="description_" className={label}>
+                Descripción *
+              </label>
+              <textarea
+                id="description_"
+                {...register("description_")}
+                className={`${baseInput} ${
+                  errors.description_ ? errorInput : normalInput
+                }`}
+                rows="2"
+              ></textarea>
+              {errors.description_ && (
+                <p className={errorText}>{errors.description_.message}</p>
+              )}
+            </div>
           </div>
         </section>
 
@@ -245,7 +243,7 @@ const FormularioServicio = ({ id_service }) => {
         <div className="flex justify-end gap-4">
           <button
             type="submit"
-            className="px-4 py-2 bg-[#0159B3] text-white rounded-lg shadow-md hover:bg-[#01447a] transition-all duration-200"
+            className="px-4 py-2 bg-[#0159B3] text-white rounded-lg shadow-md hover:bg-[#01447a] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={!isValid || !isDirty}
           >
             <i className="fas fa-save mr-2"></i>

@@ -16,14 +16,14 @@ const Sidebar = () => {
     { to: "/clientes", label: "Clientes", icon: "fas fa-user-friends" },
     { to: "/proveedores", label: "Proveedores", icon: "fas fa-truck" },
     { to: "/contactos", label: "Contactos", icon: "fas fa-address-book" },
-    { to: "/categorias", label: "Categorías", icon: "fas fa-list" },
-    { to: "/inventario", label: "Inventario", icon: "fas fa-box" },
     { to: "/servicios", label: "Servicios", icon: "fas fa-tools" },
     {
       to: "/ordenes-servicio",
       label: "Ordenes de Servicio",
       icon: "fas fa-bell",
     },
+    { to: "/inventario", label: "Inventario", icon: "fas fa-box" },
+    { to: "/categorias", label: "Categorías", icon: "fas fa-list" },
   ];
 
   return (

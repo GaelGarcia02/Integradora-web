@@ -82,8 +82,12 @@ export const PersonalProvider = ({ children }) => {
   const deletePersonal = async (id) => {
     try {
       await deletePersonalRequest(id);
-      setPersonal(personal.filter((p) => p.id !== id));
-      getPersonal();
+      setPersonal((prevPersonal) =>
+        prevPersonal.filter((p) => p.id_personal !== id)
+      );
+      setPersonalRole((prevPersonalRole) =>
+        prevPersonalRole.filter((p) => p.id_personal !== id)
+      );
     } catch (error) {
       console.error(`Error deleting personal with ID ${id}:`, error);
       throw error;

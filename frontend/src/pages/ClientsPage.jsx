@@ -5,7 +5,7 @@ import FormularioClientes from "../components/Forms/FormularioClientes";
 import { useClients } from "../context/ClientsContext";
 
 const ClientsPage = () => {
-  const { clients, getClients } = useClients();
+  const { clients, getClients, deleteClient } = useClients();
   const columnNames = [
     "id_client",
     "trade_name",
@@ -55,6 +55,7 @@ const ClientsPage = () => {
           phone_or_cell: "Teléfono o Celular",
         }}
         formType="clients"
+        onDelete={deleteClient}
       />
     </div>
   );

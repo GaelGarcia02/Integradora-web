@@ -5,7 +5,7 @@ import BotonModal from "../components/Buttons/BotonModal";
 import FormularioServicio from "../components/Forms/FormularioServicios";
 
 const ServicesPage = () => {
-  const { services, getServices } = useServices();
+  const { services, getServices, deleteService } = useServices();
   const columnNames = ["id", "name_", "sale_price"];
 
   useEffect(() => {
@@ -46,6 +46,7 @@ const ServicesPage = () => {
           sale_price: "Precio",
         }}
         formType="services"
+        onDelete={deleteService}
       />
     </div>
   );

@@ -5,7 +5,7 @@ import FormularioProveedores from "../components/Forms/FormularioProveedores";
 import { useSuppliers } from "../context/SuppliersContext";
 
 const SuppliersPage = () => {
-  const { suppliers, getSuppliers } = useSuppliers();
+  const { suppliers, getSuppliers, deleteSupplier } = useSuppliers();
   const columnNames = [
     "id_supplier",
     "trade_name",
@@ -54,6 +54,7 @@ const SuppliersPage = () => {
           contact_cell_phone: "Teléfono",
         }}
         formType="suppliers"
+        onDelete={deleteSupplier}
       />
     </div>
   );

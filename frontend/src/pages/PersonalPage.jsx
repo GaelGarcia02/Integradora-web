@@ -5,7 +5,7 @@ import FormularioPersonal from "../components/Forms/FormularioPersonal";
 import { usePersonal } from "../context/PersonalContext";
 
 const PersonalPage = () => {
-  const { personalRole, getPersonalRole } = usePersonal();
+  const { personalRole, getPersonalRole, deletePersonal } = usePersonal();
   const columnNames = ["name_", "last_name", "cell_number", "name_role"];
 
   useEffect(() => {
@@ -47,6 +47,7 @@ const PersonalPage = () => {
           name_role: "Rol",
         }}
         formType="personal"
+        onDelete={deletePersonal}
       />
     </div>
   );

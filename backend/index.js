@@ -34,7 +34,7 @@ app.use("/api", clientsRoutes);
 app.use("/api", categoriesRoutes);
 app.use("/api", suppliersRoutes);
 app.use("/api", contactsRoutes);
-app.use("/api", productsRoutes);
+app.use("/api/products", productsRoutes);
 app.use("/api", servicesRoutes);
 app.use("/api", servicesOrdersRoutes);
 app.use("/api", rolesRoutes);

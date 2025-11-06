@@ -1,4 +1,3 @@
-CREATE DATABASE salientglobaltech;
 
 USE salientglobaltech;
 

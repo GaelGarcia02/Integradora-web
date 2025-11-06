@@ -5,12 +5,16 @@ import * as Yup from "yup";
 import Swal from "sweetalert2";
 import { useCategories } from "../../context/CategoriesContext";
 
+// ✅ Esquema de validación
 const validationSchema = Yup.object().shape({
   name_: Yup.string().required("Este campo es obligatorio"),
+  unit: Yup.string().required("Seleccione una unidad"),
 });
 
+// ✅ Valores iniciales
 const emptyValues = {
   name_: "",
+  unit: "",
 };
 
 const FormularioCategorias = ({ id_category }) => {
@@ -27,15 +31,16 @@ const FormularioCategorias = ({ id_category }) => {
     mode: "onTouched",
   });
 
+  // 🔹 Cargar datos si se edita
   useEffect(() => {
     const fetchCategoryData = async () => {
       if (id_category) {
         try {
           const categoryData = await getCategory(id_category);
-          console.log("Datos de la categoría obtenidos:", categoryData);
+          console.log("📦 Datos de la categoría obtenidos:", categoryData);
           if (categoryData) reset(categoryData);
         } catch (error) {
-          console.error("Error al cargar la categoría:", error);
+          console.error("❌ Error al cargar la categoría:", error);
           Swal.fire({
             icon: "error",
             title: "Error al cargar los datos de la categoría",
@@ -50,6 +55,7 @@ const FormularioCategorias = ({ id_category }) => {
     fetchCategoryData();
   }, [id_category, getCategory, reset]);
 
+  // 🔹 Guardar categoría
   const onSubmit = async (data) => {
     try {
       if (id_category) {
@@ -71,17 +77,17 @@ const FormularioCategorias = ({ id_category }) => {
       }
       reset(emptyValues);
     } catch (error) {
+      console.error("❌ Error al guardar los datos", error);
       Swal.fire({
         icon: "error",
         title: "Error al guardar los datos",
         showConfirmButton: false,
         timer: 1500,
       });
-      console.error("Error al guardar los datos", error);
     }
   };
 
-  // --- Clases reutilizables ---
+  // 🔹 Estilos reutilizables
   const label = "block text-sm font-semibold text-gray-700 mb-1";
   const baseInput =
     "w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2";
@@ -106,6 +112,8 @@ const FormularioCategorias = ({ id_category }) => {
           <h3 className="text-lg font-semibold text-gray-800 mb-3">
             Información de la categoría
           </h3>
+
+          {/* Nombre */}
           <div>
             <label htmlFor="name_" className={label}>
               Nombre de la categoría *
@@ -121,10 +129,34 @@ const FormularioCategorias = ({ id_category }) => {
               <p className={errorText}>{errors.name_.message}</p>
             )}
           </div>
+
+          {/* Unidad */}
+          <div className="mt-4">
+            <label htmlFor="unit" className={label}>
+              Unidad asociada *
+            </label>
+            <select
+              id="unit"
+              {...register("unit")}
+              className={`${baseInput} ${
+                errors.unit ? errorInput : normalInput
+              }`}
+            >
+              <option value="">Seleccione una unidad</option>
+              <option value="pieza">Pieza</option>
+              <option value="metro">Metro</option>
+              <option value="rollo">Rollo</option>
+              <option value="paquete">Paquete</option>
+              <option value="caja">Caja</option>
+              <option value="set">Set</option>
+              <option value="kit">Kit</option>
+            </select>
+            {errors.unit && <p className={errorText}>{errors.unit.message}</p>}
+          </div>
         </section>
 
-        {/* 🔹 Botón */}
-        <div className="flex justify-end gap-4">
+        {/* 🔹 Botones */}
+        <div className="flex justify-end gap-4 mt-6">
           <button
             type="submit"
             className="px-4 py-2 bg-[#0159B3] text-white rounded-lg shadow-md hover:bg-[#01447a] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -133,6 +165,7 @@ const FormularioCategorias = ({ id_category }) => {
             <i className="fas fa-save mr-2"></i>
             Guardar
           </button>
+
           <button
             type="button"
             onClick={() => reset(emptyValues)}

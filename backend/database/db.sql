@@ -1,4 +1,3 @@
-
 USE salientglobaltech;
 
 CREATE TABLE roles (
@@ -81,14 +80,14 @@ CREATE TABLE contacts (
 
 CREATE TABLE categories (
         id_category INTEGER PRIMARY KEY AUTO_INCREMENT,
-        name_ VARCHAR(50)
+        name_ VARCHAR(50),
+        unit VARCHAR(100) NOT NULL
     );
 
 CREATE TABLE products (
         id_product INTEGER PRIMARY KEY AUTO_INCREMENT,
         name_ VARCHAR(255) NOT NULL,
         category_id INTEGER NOT NULL,
-        unit VARCHAR(100) NOT NULL,
         description_ TEXT NOT NULL,
         sale_price DECIMAL(10, 2) NOT NULL,
         model VARCHAR(100),
@@ -128,24 +127,18 @@ CREATE TABLE services_orders (
         activities VARCHAR(4000) NOT NULL,
         recomendations VARCHAR(4000) NOT NULL,
         files VARCHAR(50),
-        notes VARCHAR(100),
         state_ VARCHAR(50) NOT NULL,
-        products JSON NOT NULL,
         FOREIGN KEY (client_id) REFERENCES clients (id_client),
         FOREIGN KEY (service_id) REFERENCES services (id_service),
         FOREIGN KEY (personal_id) REFERENCES personal (id_personal)
     );
 
-CREATE TABLE tasks (
-        id_task INTEGER PRIMARY KEY AUTO_INCREMENT,
-        title VARCHAR(255) NOT NULL,
-        client_id INTEGER NOT NULL,
-        description_ TEXT NOT NULL,
-        date_ DATE NOT NULL,
-        start_time TIME NOT NULL,
-        end_time TIME NOT NULL,
-        assigned_to INTEGER NOT NULL,
-        status_ VARCHAR(50) NOT NULL,
-        FOREIGN KEY (client_id) REFERENCES clients (id_client),
-        FOREIGN KEY (assigned_to) REFERENCES personal (id_personal)
-    );
+CREATE TABLE service_order_products (
+    id_order_product INTEGER PRIMARY KEY AUTO_INCREMENT,
+    service_order_id INTEGER NOT NULL,
+    product_id INTEGER NOT NULL,
+    quantity_used INTEGER NOT NULL,
+    FOREIGN KEY (service_order_id) REFERENCES services_orders(id_service_order) ON DELETE CASCADE, -- Si se borra la orden, se borra este registro
+    FOREIGN KEY (product_id) REFERENCES products(id_product) ON DELETE RESTRICT, -- No dejes borrar un producto si está en una orden
+    UNIQUE KEY uk_order_product (service_order_id, product_id)   -- Evita duplicados (no puedes agregar el mismo producto dos veces a la misma orden)
+);

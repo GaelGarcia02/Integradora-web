@@ -19,17 +19,22 @@ export const useCategories = () => {
 
 export const CategoriesProvider = ({ children }) => {
   const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     getCategories();
   }, []);
 
   const getCategories = async () => {
+    setLoading(true);
     try {
       const response = await getCategoriesRequest();
       setCategories(response.data);
-    } catch (error) {
-      console.error("Error fetching categories:", error);
+    } catch (err) {
+      setError(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -37,44 +42,46 @@ export const CategoriesProvider = ({ children }) => {
     try {
       const response = await getCategoryRequest(id);
       return response.data;
-    } catch (error) {
-      console.error(`Error fetching category with ID ${id}:`, error);
+    } catch (err) {
+      throw err;
     }
   };
 
   const createCategory = async (category) => {
+    setLoading(true);
     try {
-      const response = await createCategoryRequest(category);
-      setCategories([...categories, response.data]);
-      getCategories();
-    } catch (error) {
-      console.error("Error creating category:", error);
-      throw error;
+      await createCategoryRequest(category);
+      await getCategories();
+    } catch (err) {
+      setError(err);
+      throw err;
+    } finally {
+      setLoading(false);
     }
   };
 
   const updateCategory = async (id, category) => {
+    setLoading(true);
     try {
-      await updateCategoryRequest(id, category);
-      const updatedCategories = categories.map((cat) =>
-        cat.id === id ? { ...cat, ...category } : cat
-      );
-      getCategories();
-      setCategories(updatedCategories);
+      await updateCategoryRequest(id, category); // Actualiza la BD
+      await getCategories(); // Pide la lista fresca
     } catch (error) {
       console.error(`Error updating category with ID ${id}:`, error);
       throw error;
+    } finally {
+      setLoading(false);
     }
   };
 
   const deleteCategory = async (id) => {
     try {
       await deleteCategoryRequest(id);
-      setCategories(categories.filter((cat) => cat.id !== id));
-      getCategories();
+      await getCategories();
     } catch (error) {
       console.error(`Error deleting category with ID ${id}:`, error);
       throw error;
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -82,6 +89,8 @@ export const CategoriesProvider = ({ children }) => {
     <CategoriesContext.Provider
       value={{
         categories,
+        loading,
+        error,
         getCategory,
         getCategories,
         createCategory,

@@ -6,12 +6,15 @@ import {
   updateProduct,
   deleteProduct,
   getProductsProvider,
+  getAvailableProducts,
 } from "../controllers/products.controller.js";
 
 const router = Router();
 
-// ✅ La ruta /provider debe declararse antes que /:id
 router.get("/provider", getProductsProvider);
+
+router.get("/available", getAvailableProducts);
+
 router.get("/", getProducts);
 router.get("/:id", getProduct);
 router.post("/", createProduct);

@@ -16,7 +16,7 @@ function Login() {
   useEffect(() => {
     if (isAuthenticated) {
       console.log("ye");
-      navigate("/tareas");
+      navigate("/ordenes-servicio");
     }
   }, [isAuthenticated, navigate]);
 

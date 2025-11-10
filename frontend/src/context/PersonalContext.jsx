@@ -21,17 +21,24 @@ export const usePersonal = () => {
 export const PersonalProvider = ({ children }) => {
   const [personal, setPersonal] = useState([]);
   const [personalRole, setPersonalRole] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     getAllPersonal();
+    getPersonalRole(); // Llamar a ambas
   }, []);
 
   const getAllPersonal = async () => {
+    setLoading(true);
     try {
       const response = await getAllPersonalRequest();
       setPersonal(response.data);
     } catch (error) {
       console.error("Error fetching personal:", error);
+      setError(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -41,56 +48,65 @@ export const PersonalProvider = ({ children }) => {
       return response.data;
     } catch (error) {
       console.error(`Error fetching personal with ID ${id}:`, error);
+      throw error; // Relanza el error
     }
   };
 
-  const getPersonalRole = async (id) => {
+  const getPersonalRole = async () => {
+    setLoading(true);
     try {
-      const response = await getPersonalRoleRequest(id);
+      const response = await getPersonalRoleRequest();
       setPersonalRole(response.data);
     } catch (error) {
-      console.error(`Error fetching personal with ID ${id}:`, error);
+      console.error(`Error fetching personal with role:`, error);
+      setError(error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const createPersonal = async (personalData) => {
+    setLoading(true);
     try {
-      const response = await createPersonalRequest(personalData);
-      setPersonal([...personal, response.data]);
-      getPersonal();
+      await createPersonalRequest(personalData);
+      await getAllPersonal(); // Refresca la lista
+      await getPersonalRole(); // Refresca la otra lista
     } catch (error) {
       console.error("Error creating personal:", error);
+      setError(error);
       throw error;
+    } finally {
+      setLoading(false);
     }
   };
 
   const updatePersonal = async (id, personalData) => {
+    setLoading(true);
     try {
-      console.log(personalData);
       await updatePersonalRequest(id, personalData);
-      const updatedPersonal = personal.map((p) =>
-        p.id === id ? { ...p, ...personalData } : p
-      );
-      getPersonal();
-      setPersonal(updatedPersonal);
+      await getAllPersonal(); // Refresca la lista
+      await getPersonalRole(); // Refresca la otra lista
     } catch (error) {
       console.error(`Error updating personal with ID ${id}:`, error);
+      setError(error);
       throw error;
+    } finally {
+      setLoading(false);
     }
   };
 
   const deletePersonal = async (id) => {
+    setLoading(true);
     try {
       await deletePersonalRequest(id);
-      setPersonal((prevPersonal) =>
-        prevPersonal.filter((p) => p.id_personal !== id)
-      );
-      setPersonalRole((prevPersonalRole) =>
-        prevPersonalRole.filter((p) => p.id_personal !== id)
-      );
+      await getAllPersonal(); // Refresca la lista
+      await getPersonalRole(); // Refresca la otra lista
     } catch (error) {
       console.error(`Error deleting personal with ID ${id}:`, error);
+      setError(error);
       throw error;
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -99,6 +115,8 @@ export const PersonalProvider = ({ children }) => {
       value={{
         personal,
         personalRole,
+        loading,
+        error,
         getPersonal,
         getAllPersonal,
         createPersonal,

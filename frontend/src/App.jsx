@@ -23,6 +23,7 @@ import { ContactsProvider } from "./context/ContactsContext";
 import { ServicesProvider } from "./context/ServicesContext";
 import { CategoriesProvider } from "./context/CategoriesContext";
 import { InventoryProvider } from "./context/InventoryContext";
+import { ServiceOrdersProvider } from "./context/ServiceOrdersContext";
 
 function App() {
   return (
@@ -34,9 +35,11 @@ function App() {
               <ContactsProvider>
                 <ServicesProvider>
                   <CategoriesProvider>
-                  <InventoryProvider>
-                    <AppContent />
-                  </InventoryProvider>
+                    <InventoryProvider>
+                      <ServiceOrdersProvider>
+                        <AppContent />
+                      </ServiceOrdersProvider>
+                    </InventoryProvider>
                   </CategoriesProvider>
                 </ServicesProvider>
               </ContactsProvider>
@@ -60,7 +63,6 @@ function AppContent() {
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route element={<ProtectedRoute />}>
-          <Route path="/tareas" element={<TasksPage />} />
           <Route path="/personal" element={<PersonalPage />} />
           <Route path="/clientes" element={<ClientsPage />} />
           <Route path="/proveedores" element={<SuppliersPage />} />

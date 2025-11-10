@@ -39,24 +39,22 @@ export const ContactsProvider = ({ children }) => {
   };
 
   const getContact = async (id) => {
-    setLoading(true);
     try {
       const response = await getContactRequest(id);
       return response.data;
     } catch (err) {
-      setError(err);
-    } finally {
-      setLoading(false);
+      throw err;
     }
   };
 
   const createContact = async (contact) => {
     setLoading(true);
     try {
-      const response = await createContactRequest(contact);
-      setContacts((prevContacts) => [...prevContacts, response.data]);
+      await createContactRequest(contact);
+      await getContacts();
     } catch (err) {
       setError(err);
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -66,11 +64,10 @@ export const ContactsProvider = ({ children }) => {
     setLoading(true);
     try {
       await updateContactRequest(id, contact);
-      setContacts((prevContacts) =>
-        prevContacts.map((ct) => (ct.id === id ? { ...ct, ...contact } : ct))
-      );
+      await getContacts();
     } catch (err) {
       setError(err);
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -80,10 +77,10 @@ export const ContactsProvider = ({ children }) => {
     setLoading(true);
     try {
       await deleteContactRequest(id);
-      setContacts((prevContacts) => prevContacts.filter((ct) => ct.id !== id));
-      getContacts();
+      await getContacts();
     } catch (err) {
       setError(err);
+      throw err;
     } finally {
       setLoading(false);
     }

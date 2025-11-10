@@ -5,6 +5,7 @@ import {
   createServiceOrder,
   updateServiceOrder,
   deleteServiceOrder,
+  confirmServiceOrder,
 } from "../controllers/services_orders.controller.js";
 
 const router = Router();
@@ -23,5 +24,8 @@ router.put("/service-orders/:id", updateServiceOrder);
 
 //* Delete a service order by ID
 router.delete("/service-orders/:id", deleteServiceOrder);
+
+//* Confirm a service order and update stock
+router.post("/service-orders/:id/confirm", confirmServiceOrder);
 
 export default router;

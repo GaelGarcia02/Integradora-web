@@ -9,14 +9,14 @@ export const getProducts = async (req, res) => {
         p.name_,
         p.category_id,
         c.name_ AS category_name,
-        c.unit AS unit, -- 👈 ahora viene desde categories
+        c.unit AS unit,
         p.description_,
         p.sale_price,
         p.model,
         p.factory_code,
         p.supplier_id,
         p.manufacturer_brand,
-        p.initial_stock,
+        p.stock,
         p.minimum_stock,
         p.product_image
       FROM products p
@@ -34,7 +34,6 @@ export const getProducts = async (req, res) => {
 //* Obtener productos con proveedores
 export const getProductsProvider = async (req, res) => {
   try {
-    console.log("🔥 Entró a getProductsProvider");
     const [result] = await pool.query(`
       SELECT 
         p.id_product, 
@@ -49,7 +48,7 @@ export const getProductsProvider = async (req, res) => {
         p.supplier_id, 
         s.trade_name AS supplier_name, 
         p.manufacturer_brand, 
-        p.initial_stock, 
+        p.stock, 
         p.minimum_stock, 
         p.product_image
       FROM products p
@@ -58,7 +57,6 @@ export const getProductsProvider = async (req, res) => {
       ORDER BY p.name_ ASC
     `);
 
-    console.log("📦 Resultados:", result.length);
     res.json(result);
   } catch (error) {
     console.error("❌ Error en getProductsProvider:", error);
@@ -105,15 +103,17 @@ export const createProduct = async (req, res) => {
       factory_code,
       supplier_id,
       manufacturer_brand,
-      initial_stock,
+      stock,
       minimum_stock,
       product_image,
     } = req.body;
 
     const [result] = await pool.query(
-      `INSERT INTO products 
-      (name_, category_id, description_, sale_price, model, factory_code, supplier_id, manufacturer_brand, initial_stock, minimum_stock, product_image)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      `
+      INSERT INTO products 
+      (name_, category_id, description_, sale_price, model, factory_code, supplier_id, manufacturer_brand, stock, minimum_stock, product_image) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `,
       [
         name_,
         category_id,
@@ -123,7 +123,7 @@ export const createProduct = async (req, res) => {
         factory_code,
         supplier_id,
         manufacturer_brand,
-        initial_stock,
+        stock,
         minimum_stock,
         product_image || null,
       ]
@@ -139,12 +139,8 @@ export const createProduct = async (req, res) => {
 //* Actualizar un producto existente
 export const updateProduct = async (req, res) => {
   try {
-    console.log("📩 Petición PUT recibida en updateProduct");
-    console.log("🟢 Body recibido:", req.body);
-
     const { id } = req.params;
 
-    // ✅ Campos válidos (ya sin 'unit')
     const allowedFields = [
       "name_",
       "category_id",
@@ -154,20 +150,17 @@ export const updateProduct = async (req, res) => {
       "factory_code",
       "supplier_id",
       "manufacturer_brand",
-      "initial_stock",
+      "stock",
       "minimum_stock",
       "product_image",
     ];
 
-    // 🔍 Filtramos solo los campos válidos
     const filteredData = Object.keys(req.body)
       .filter((key) => allowedFields.includes(key))
       .reduce((obj, key) => {
         obj[key] = req.body[key];
         return obj;
       }, {});
-
-    console.log("🧾 Campos que se van a actualizar:", filteredData);
 
     if (Object.keys(filteredData).length === 0) {
       return res
@@ -184,8 +177,7 @@ export const updateProduct = async (req, res) => {
       return res.status(404).json({ message: "Producto no encontrado" });
     }
 
-    console.log("✅ Producto actualizado correctamente");
-    res.json({ message: "✅ Producto actualizado correctamente" });
+    res.json({ message: "Producto actualizado correctamente" });
   } catch (error) {
     console.error("❌ Error en updateProduct:", error);
     res.status(500).json({ message: error.message });
@@ -207,6 +199,61 @@ export const deleteProduct = async (req, res) => {
     return res.sendStatus(204);
   } catch (error) {
     console.error("❌ Error en deleteProduct:", error);
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+// * Obtener productos con stock disponible, comprometido y físico
+export const getAvailableProducts = async (req, res) => {
+  try {
+    const query = `
+      SELECT 
+        -- Campos originales (incluida la imagen)
+        p.id_product,
+        p.name_,
+        p.category_id,
+        c.name_ AS category_name,
+        c.unit,
+        p.description_,
+        p.sale_price,
+        p.model,
+        p.factory_code,
+        p.supplier_id,
+        p.manufacturer_brand,
+        p.minimum_stock,
+        p.product_image,
+        p.stock,
+
+        -- Campos de stock calculados
+        p.stock AS stock_fisico,
+        COALESCE(committed.total_committed, 0) AS stock_comprometido,
+        (p.stock - COALESCE(committed.total_committed, 0)) AS stock_disponible
+
+      FROM 
+        products p
+      JOIN 
+        categories c ON p.category_id = c.id_category
+      LEFT JOIN (
+        SELECT 
+          sop.product_id, 
+          SUM(sop.quantity_used) AS total_committed
+        FROM 
+          service_order_products sop
+        JOIN 
+          services_orders so ON sop.service_order_id = so.id_service_order
+        WHERE 
+          so.state_ = 'Pendiente'
+        GROUP BY 
+          sop.product_id
+      ) AS committed ON p.id_product = committed.product_id
+      ORDER BY 
+        p.name_ ASC;
+    `;
+
+    const [products] = await pool.query(query);
+    res.json(products);
+  } catch (error) {
+    console.error("❌ Error en getAvailableProducts:", error);
     return res.status(500).json({ message: error.message });
   }
 };

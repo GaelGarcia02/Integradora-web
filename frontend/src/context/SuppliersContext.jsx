@@ -39,29 +39,26 @@ export const SuppliersProvider = ({ children }) => {
   };
 
   const getSupplier = async (id) => {
-    setLoading(true);
     try {
       const response = await getSupplierRequest(id);
       return response.data;
     } catch (err) {
-      setError(err);
-    } finally {
-      setLoading(false);
+      throw err; // Relanza el error
     }
   };
 
   const createSupplier = async (supplier) => {
     setLoading(true);
     try {
-      const response = await createSupplierRequest(supplier);
-      setSuppliers((prevSuppliers) => [...prevSuppliers, response.data]);
-      getSuppliers();
+      await createSupplierRequest(supplier);
+      await getSuppliers(); // Refresca la lista
     } catch (err) {
       console.error(
         "Error al crear proveedor:",
         err.response?.data || err.message
       );
       setError(err);
+      throw err; // Relanza el error
     } finally {
       setLoading(false);
     }
@@ -71,16 +68,12 @@ export const SuppliersProvider = ({ children }) => {
     setLoading(true);
     try {
       await updateSupplierRequest(id, supplier);
-      setSuppliers((prevSuppliers) =>
-        prevSuppliers.map((sup) =>
-          sup.id === id ? { ...sup, ...supplier } : sup
-        )
-      );
-      getSuppliers();
+      await getSuppliers(); // Refresca la lista
     } catch (err) {
       console.log("no jala");
       console.error(err.response?.data || err.message || err);
       setError(err);
+      throw err; // Relanza el error
     } finally {
       setLoading(false);
     }
@@ -90,12 +83,10 @@ export const SuppliersProvider = ({ children }) => {
     setLoading(true);
     try {
       await deleteSupplierRequest(id);
-      setSuppliers((prevSuppliers) =>
-        prevSuppliers.filter((sup) => sup.id !== id)
-      );
-      getSuppliers();
+      await getSuppliers(); // Refresca la lista
     } catch (err) {
       setError(err);
+      throw err; // Relanza el error
     } finally {
       setLoading(false);
     }

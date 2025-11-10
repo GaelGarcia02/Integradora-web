@@ -4,9 +4,9 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import Swal from "sweetalert2";
 import { useInventory } from "../../context/InventoryContext";
-import { useCategories } from "../../context/CategoriesContext"; // 👈 Importa categorías
+import { useCategories } from "../../context/CategoriesContext";
 
-// ✅ Esquema de validación Yup (ya sin `unit`)
+// ✅ Esquema de validación Yup (usa 'stock')
 const validationSchema = Yup.object().shape({
   name_: Yup.string().required("Este campo es obligatorio"),
   category_id: Yup.string().required("Este campo es obligatorio"),
@@ -18,7 +18,7 @@ const validationSchema = Yup.object().shape({
   factory_code: Yup.string(),
   supplier_id: Yup.string().required("Este campo es obligatorio"),
   manufacturer_brand: Yup.string().required("Este campo es obligatorio"),
-  initial_stock: Yup.number()
+  stock: Yup.number()
     .typeError("Debe ser un número válido")
     .required("Este campo es obligatorio"),
   minimum_stock: Yup.number()
@@ -50,7 +50,7 @@ const FormularioInventario = ({ productData, onClose }) => {
     factory_code: "",
     supplier_id: "",
     manufacturer_brand: "",
-    initial_stock: "",
+    stock: "",
     minimum_stock: "",
     product_image: "",
   };
@@ -73,7 +73,7 @@ const FormularioInventario = ({ productData, onClose }) => {
   } = useForm({
     resolver: yupResolver(validationSchema),
     defaultValues: emptyValues,
-    mode: "onTouched",
+    mode: "onChange",
   });
 
   // --- Cargar producto si se está editando ---
@@ -250,7 +250,7 @@ const FormularioInventario = ({ productData, onClose }) => {
               )}
             </div>
 
-            {/* Categoría con unidad automática */}
+            {/* Categoría */}
             <div>
               <label htmlFor="category_id" className={label}>
                 Categoría *
@@ -350,19 +350,19 @@ const FormularioInventario = ({ productData, onClose }) => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label htmlFor="initial_stock" className={label}>
-                Stock Inicial *
+              <label htmlFor="stock" className={label}>
+                Stock Físico *
               </label>
               <input
                 type="number"
-                id="initial_stock"
-                {...register("initial_stock")}
+                id="stock"
+                {...register("stock")}
                 className={`${baseInput} ${
-                  errors.initial_stock ? errorInput : normalInput
+                  errors.stock ? errorInput : normalInput
                 }`}
               />
-              {errors.initial_stock && (
-                <p className={errorText}>{errors.initial_stock.message}</p>
+              {errors.stock && (
+                <p className={errorText}>{errors.stock.message}</p>
               )}
             </div>
 
@@ -417,6 +417,22 @@ const FormularioInventario = ({ productData, onClose }) => {
               />
               {errors.sale_price && (
                 <p className={errorText}>{errors.sale_price.message}</p>
+              )}
+            </div>
+            <div>
+              <label htmlFor="manufacturer_brand" className={label}>
+                Marca del Fabricante *
+              </label>
+              <input
+                type="text"
+                id="manufacturer_brand"
+                {...register("manufacturer_brand")}
+                className={`${baseInput} ${
+                  errors.manufacturer_brand ? errorInput : normalInput
+                }`}
+              />
+              {errors.manufacturer_brand && (
+                <p className={errorText}>{errors.manufacturer_brand.message}</p>
               )}
             </div>
           </div>

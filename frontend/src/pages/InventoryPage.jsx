@@ -18,23 +18,19 @@ const InventoryPage = () => {
     getCategories();
   }, []);
 
-  // 🔍 Filtrar productos por categoría y nombre
   const filteredProducts = products
     .filter((p) =>
       selectedCategory === "all"
         ? true
         : String(p.category_id) === String(selectedCategory)
     )
-    .filter((p) =>
-      p.name_.toLowerCase().includes(search.trim().toLowerCase())
-    )
+    .filter((p) => p.name_.toLowerCase().includes(search.trim().toLowerCase()))
     .sort((a, b) => {
       if (sortBy === "price") return a.sale_price - b.sale_price;
-      if (sortBy === "stock") return b.initial_stock - a.initial_stock;
+      if (sortBy === "stock") return b.stock_disponible - a.stock_disponible;
       return a.name_.localeCompare(b.name_);
     });
 
-  // 🗑️ Eliminar producto
   const handleDelete = async (id_product) => {
     const confirm = await Swal.fire({
       title: "¿Eliminar producto?",
@@ -180,18 +176,33 @@ const InventoryPage = () => {
                 ${product.sale_price}
               </p>
 
-              <p className="text-sm text-gray-600 mb-4">
-                Stock:{" "}
-                <span
-                  className={`font-semibold ${
-                    product.initial_stock <= product.minimum_stock
-                      ? "text-red-500"
-                      : "text-green-600"
-                  }`}
-                >
-                  {product.initial_stock}
-                </span>
-              </p>
+              <div className="w-full text-sm text-gray-600 mb-4 text-left px-2">
+                <div className="flex justify-between items-center border-b pb-1 mb-1">
+                  <span className="font-semibold text-gray-800">
+                    Disponible:
+                  </span>
+                  <span
+                    className={`font-bold text-lg ${
+                      product.stock_disponible <= product.minimum_stock
+                        ? "text-red-500"
+                        : "text-green-600"
+                    }`}
+                  >
+                    {product.stock_disponible}
+                    <span className="text-xs ml-1">{product.unit}</span>
+                  </span>
+                </div>
+
+                <div className="flex justify-between text-xs text-gray-500">
+                  <span>Físico (Total):</span>
+                  <span>{product.stock_fisico}</span>
+                </div>
+
+                <div className="flex justify-between text-xs text-gray-500">
+                  <span>Comprometido:</span>
+                  <span>{product.stock_comprometido}</span>
+                </div>
+              </div>
 
               <div className="flex gap-2 mt-auto">
                 <BotonModal

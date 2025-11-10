@@ -81,7 +81,7 @@ CREATE TABLE contacts (
 CREATE TABLE categories (
         id_category INTEGER PRIMARY KEY AUTO_INCREMENT,
         name_ VARCHAR(50),
-        unit VARCHAR(100) NOT NULL
+        unit VARCHAR(50) NOT NULL
     );
 
 CREATE TABLE products (
@@ -127,7 +127,9 @@ CREATE TABLE services_orders (
         activities VARCHAR(4000) NOT NULL,
         recomendations VARCHAR(4000) NOT NULL,
         files VARCHAR(50),
+        notes VARCHAR(100),
         state_ VARCHAR(50) NOT NULL,
+        products JSON NOT NULL,
         FOREIGN KEY (client_id) REFERENCES clients (id_client),
         FOREIGN KEY (service_id) REFERENCES services (id_service),
         FOREIGN KEY (personal_id) REFERENCES personal (id_personal)

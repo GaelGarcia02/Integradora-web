@@ -39,25 +39,22 @@ export const ClientsProvider = ({ children }) => {
   };
 
   const getClient = async (id) => {
-    setLoading(true);
     try {
       const response = await getClientRequest(id);
       return response.data;
     } catch (err) {
-      setError(err);
-    } finally {
-      setLoading(false);
+      throw err;
     }
   };
 
   const createClient = async (client) => {
     setLoading(true);
     try {
-      const response = await createClientRequest(client);
-      setClients((prevClients) => [...prevClients, response.data]);
-      getClients();
+      await createClientRequest(client);
+      await getClients();
     } catch (err) {
       setError(err);
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -67,12 +64,10 @@ export const ClientsProvider = ({ children }) => {
     setLoading(true);
     try {
       await updateClientRequest(id, client);
-      setClients((prevClients) =>
-        prevClients.map((cl) => (cl.id === id ? { ...cl, ...client } : cl))
-      );
-      getClients();
+      await getClients();
     } catch (err) {
       setError(err);
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -82,10 +77,10 @@ export const ClientsProvider = ({ children }) => {
     setLoading(true);
     try {
       await deleteClientRequest(id);
-      setClients((prevClients) => prevClients.filter((cl) => cl.id !== id));
-      getClients();
+      await getClients();
     } catch (err) {
       setError(err);
+      throw err;
     } finally {
       setLoading(false);
     }

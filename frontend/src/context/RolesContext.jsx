@@ -41,18 +41,6 @@ export const RolesProvider = ({ children }) => {
     }
   };
 
-  const getRole = async (id) => {
-    setLoading(true);
-    try {
-      const response = await getRoleRequest(id);
-      return response.data;
-    } catch (err) {
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const getRolesUsers = async () => {
     setLoading(true);
     try {
@@ -65,14 +53,25 @@ export const RolesProvider = ({ children }) => {
     }
   };
 
+  const getRole = async (id) => {
+    try {
+      const response = await getRoleRequest(id);
+      return response.data;
+    } catch (err) {
+      setError(err);
+      throw err;
+    }
+  };
+
   const createRole = async (role) => {
     setLoading(true);
     try {
-      const response = await createRoleRequest(role);
-      setRoles((prevRoles) => [...prevRoles, response.data]);
-      getRolesUsers();
+      await createRoleRequest(role);
+      await getRoles();
+      await getRolesUsers();
     } catch (err) {
       setError(err);
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -82,12 +81,11 @@ export const RolesProvider = ({ children }) => {
     setLoading(true);
     try {
       await updateRoleRequest(id, role);
-      setRoles((prevRoles) =>
-        prevRoles.map((rl) => (rl.id === id ? { ...rl, ...role } : rl))
-      );
-      getRolesUsers();
+      await getRoles();
+      await getRolesUsers();
     } catch (err) {
       setError(err);
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -97,10 +95,11 @@ export const RolesProvider = ({ children }) => {
     setLoading(true);
     try {
       await deleteRoleRequest(id);
-      setRoles((prevRoles) => prevRoles.filter((rl) => rl.id !== id));
-      getRolesUsers();
+      await getRoles();
+      await getRolesUsers();
     } catch (err) {
       setError(err);
+      throw err;
     } finally {
       setLoading(false);
     }

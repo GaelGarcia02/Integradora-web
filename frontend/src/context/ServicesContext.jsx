@@ -6,7 +6,6 @@ import {
   updateServiceRequest,
   deleteServiceRequest,
 } from "../api/services.api";
-import { get } from "react-hook-form";
 
 const ServicesContext = createContext();
 
@@ -20,17 +19,23 @@ export const useServices = () => {
 
 export const ServicesProvider = ({ children }) => {
   const [services, setServices] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     getServices();
   }, []);
 
   const getServices = async () => {
+    setLoading(true);
     try {
       const response = await getServicesRequest();
       setServices(response.data);
     } catch (error) {
       console.error("Error fetching services:", error);
+      setError(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -40,42 +45,49 @@ export const ServicesProvider = ({ children }) => {
       return response.data;
     } catch (error) {
       console.error(`Error fetching service with ID ${id}:`, error);
+      throw error;
     }
   };
 
   const createService = async (service) => {
+    setLoading(true);
     try {
-      const response = await createServiceRequest(service);
-      setServices([...services, response.data]);
-      getServices();
+      await createServiceRequest(service);
+      await getServices();
     } catch (error) {
       console.error("Error creating service:", error);
+      setError(error);
       throw error;
+    } finally {
+      setLoading(false);
     }
   };
 
   const updateService = async (id, service) => {
+    setLoading(true);
     try {
       await updateServiceRequest(id, service);
-      const updatedServices = services.map((srv) =>
-        srv.id === id ? { ...srv, ...service } : srv
-      );
-      getServices();
-      setServices(updatedServices);
+      await getServices();
     } catch (error) {
       console.error(`Error updating service with ID ${id}:`, error);
+      setError(error);
       throw error;
+    } finally {
+      setLoading(false);
     }
   };
 
   const deleteService = async (id) => {
+    setLoading(true);
     try {
       await deleteServiceRequest(id);
-      setServices(services.filter((srv) => srv.id !== id));
-      getServices();
+      await getServices();
     } catch (error) {
       console.error(`Error deleting service with ID ${id}:`, error);
+      setError(error);
       throw error;
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -83,6 +95,8 @@ export const ServicesProvider = ({ children }) => {
     <ServicesContext.Provider
       value={{
         services,
+        loading,
+        error,
         getService,
         getServices,
         createService,

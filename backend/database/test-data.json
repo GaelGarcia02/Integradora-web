@@ -11,14 +11,14 @@
     "post": {
       "name_": "Juan",
       "last_name": "Pérez",
-      "email": "juan.perez@example.com",
+      "email": "juanperez@gmail.com",
       "cell_number": "5551234567",
       "country": "México",
       "state_": "Jalisco",
       "city": "Guadalajara",
       "phone": "3339876543",
       "address_": "Av. Revolución 123",
-      "password_": "HashedPassword123!",
+      "password_": "juan123",
       "role_id": 1
     },
     "update": {

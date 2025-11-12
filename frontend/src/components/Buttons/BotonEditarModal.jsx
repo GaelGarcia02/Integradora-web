@@ -11,9 +11,9 @@ const BotonEditarModal = ({ nombreBoton, icono, contenidoModal, titulo }) => {
         type="button"
         onClick={() => setShow(true)}
         title={titulo || nombreBoton}
-        className="flex items-center justify-center gap-2 rounded-lg bg-yellow-400 px-4 py-2 font-semibold text-gray-800 shadow-sm hover:bg-yellow-500 transition-all duration-200 ease-in-out"
+        className="flex items-center justify-center gap-2 rounded-lg bg-yellow-400 px-4 py-2 font-semibold text-gray-800 shadow-sm hover:bg-yellow-500 transition-all duration-200 ease-in-out cursor-pointer"
       >
-        <span>{nombreBoton}</span>
+        <i className={icono}></i> {nombreBoton}
       </button>
 
       {/* --- Modal --- */}

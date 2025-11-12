@@ -245,7 +245,7 @@ const TablaInfo = ({
                       {specialPages ? (
                         <BotonUrl
                           nombreBoton="Editar"
-                          icono="bi bi-pencil"
+                          icono="fas fa-edit"
                           url={`${baseUrl}/${obtenerIdParaFormulario(
                             formType,
                             row
@@ -256,7 +256,7 @@ const TablaInfo = ({
                         <>
                           <BotonEditarModal
                             nombreBoton="Editar"
-                            icono="bi bi-pencil"
+                            icono="fas fa-edit"
                             contenidoModal={() =>
                               obtenerComponenteFormulario(
                                 formType,
@@ -273,10 +273,9 @@ const TablaInfo = ({
                                   obtenerIdParaFormulario(formType, row)
                                 )
                               }
-                              className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md text-sm shadow-sm transition flex items-center gap-1"
+                              className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md text-sm shadow-sm transition flex items-center gap-1 cursor-pointer"
                             >
-                              <i className="bi bi-trash"></i>
-                              Eliminar
+                              <i className="fas fa-trash"></i>
                             </button>
                           )}
                         </>

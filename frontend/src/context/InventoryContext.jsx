@@ -47,7 +47,7 @@ export const InventoryProvider = ({ children }) => {
     setLoading(true);
     try {
       const res = await createProductRequest(data);
-      await getAvailableProducts(); // Refresca la lista
+      await getProducts(); // Refresca la lista
       return res.data;
     } catch (error) {
       console.error("Error al crear producto:", error);
@@ -62,7 +62,7 @@ export const InventoryProvider = ({ children }) => {
     setLoading(true);
     try {
       const res = await updateProductRequest(id, data);
-      await getAvailableProducts(); // Refresca la lista
+      await getProducts(); // Refresca la lista
       return res.data;
     } catch (error) {
       console.error("Error al actualizar producto:", error);
@@ -77,7 +77,7 @@ export const InventoryProvider = ({ children }) => {
     setLoading(true);
     try {
       await deleteProductRequest(id);
-      await getAvailableProducts(); // Refresca la lista
+      await getProducts(); // Refresca la lista
     } catch (error) {
       console.error("Error al eliminar producto:", error);
       setError(error);

@@ -22,7 +22,7 @@ const BotonModal = ({ nombreBoton, icono, contenidoModal, titulo }) => {
         type="button"
         onClick={handleShow}
         title={titulo || nombreBoton}
-        className="flex items-center justify-center gap-2 rounded-md bg-[#0159B3] px-4 py-2 font-semibold text-white shadow-sm transition duration-150 ease-in-out hover:bg-blue-800"
+        className="flex items-center justify-center gap-2 rounded-md bg-[#0159B3] px-4 py-2 font-semibold text-white shadow-sm transition duration-150 ease-in-out hover:bg-blue-800 cursor-pointer"
       >
         <i className={icono}></i> {nombreBoton}
       </button>
@@ -61,7 +61,7 @@ const BotonModal = ({ nombreBoton, icono, contenidoModal, titulo }) => {
 
             {/* --- Contenido --- */}
             <div className="p-6 pt-2 overflow-y-auto flex-1">
-              {contenidoModal}
+              {React.cloneElement(contenidoModal, { onClose: handleClose })}
             </div>
 
             {/* --- Footer --- */}

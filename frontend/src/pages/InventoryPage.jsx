@@ -3,6 +3,7 @@ import { useInventory } from "../context/InventoryContext";
 import { useCategories } from "../context/CategoriesContext";
 import Swal from "sweetalert2";
 import BotonModal from "../components/Buttons/BotonModal";
+import BotonEditarModal from "../components/Buttons/BotonEditarModal";
 import FormularioInventario from "../components/Forms/FormularioInventario";
 
 const InventoryPage = () => {
@@ -205,16 +206,16 @@ const InventoryPage = () => {
               </div>
 
               <div className="flex gap-2 mt-auto">
-                <BotonModal
+                <BotonEditarModal
                   nombreBoton="Editar"
                   icono="fas fa-edit"
                   color="bg-yellow-500 hover:bg-yellow-600"
-                  contenidoModal={
+                  contenidoModal={() => (
                     <FormularioInventario
                       productData={product}
                       onClose={getProducts}
                     />
-                  }
+                  )}
                   titulo="Editar Producto"
                 />
                 <button

@@ -150,8 +150,12 @@ export const updateServiceOrder = async (req, res) => {
 
   try {
     await connection.beginTransaction();
-
+    // Campos que no se actualizan directamente o que no pertencen a la tabla
+    delete orderData.client_name;
+    delete orderData.personal_name;
+    delete orderData.service_name;
     delete orderData.id_service_order;
+
     await connection.query(
       "UPDATE services_orders SET ? WHERE id_service_order = ?",
       [orderData, id]

@@ -20,7 +20,7 @@ const TablaInfo = ({
   hiddenColumns = [],
   customColumnNames = {},
   formType,
-  rowsPerPage = 15,
+  rowsPerPage = 5,
   specialPages = false,
   baseUrl = "",
   onDelete, // Add this new prop

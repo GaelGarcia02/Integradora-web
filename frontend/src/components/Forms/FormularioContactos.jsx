@@ -316,7 +316,7 @@ const FormularioContactos = ({ id_contact }) => {
           </div>
         </section>
 
-        {/* 🔹 Botón */}
+        {/* Botón */}
         <div className="flex justify-end gap-4">
           <button
             type="submit"

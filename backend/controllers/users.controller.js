@@ -92,6 +92,8 @@ export const updateUser = async (req, res) => {
   try {
     const userData = { ...req.body };
 
+    delete userData.confirmPassword;
+
     // Si se incluye una nueva contraseña, encriptarla
     if (userData.password_) {
       const salt = await bcrypt.genSalt(10);

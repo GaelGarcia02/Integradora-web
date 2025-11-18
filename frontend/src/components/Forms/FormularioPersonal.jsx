@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 import { usePersonal } from "../../context/PersonalContext";
 import { useRoles } from "../../context/RolesContext";
 
+// Esquema de validación (Contraseña opcional al editar)
 const validationSchema = Yup.object().shape({
   name_: Yup.string().required("Este campo es obligatorio"),
   last_name: Yup.string().required("Este campo es obligatorio"),
@@ -20,14 +21,18 @@ const validationSchema = Yup.object().shape({
   country: Yup.string().required("Este campo es obligatorio"),
   state_: Yup.string().required("Este campo es obligatorio"),
   city: Yup.string().required("Este campo es obligatorio"),
-  phone: Yup.string(),
+  phone: Yup.string().nullable(),
   address_: Yup.string().required("Este campo es obligatorio"),
-  password_: Yup.string()
-    .required("Este campo es obligatorio")
-    .min(6, "Debe tener al menos 6 caracteres"),
+
+  password_: Yup.string().min(6, "Debe tener al menos 6 caracteres").nullable(),
+
   confirmPassword: Yup.string()
     .oneOf([Yup.ref("password_"), null], "Las contraseñas deben coincidir")
-    .required("Este campo es obligatorio"),
+    .when("password_", ([password_], schema) => {
+      return password_ && password_.length > 0
+        ? schema.required("Debe confirmar la contraseña")
+        : schema;
+    }),
 });
 
 const emptyValues = {
@@ -45,9 +50,10 @@ const emptyValues = {
   confirmPassword: "",
 };
 
-const FormularioPersonal = ({ id_personal }) => {
+const FormularioPersonal = ({ id_personal, onClose, onSuccess }) => {
   const { getPersonal, createPersonal, updatePersonal } = usePersonal();
-  const { roles } = useRoles();
+  const { roles, getRoles } = useRoles();
+  const isEditing = !!id_personal;
 
   const {
     register,
@@ -61,47 +67,77 @@ const FormularioPersonal = ({ id_personal }) => {
   });
 
   useEffect(() => {
-    const fetchPersonalData = async () => {
-      if (id_personal) {
-        const personalData = await getPersonal(id_personal);
-        if (personalData) reset(personalData);
-      } else reset(emptyValues);
+    getRoles();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (isEditing) {
+        try {
+          const data = await getPersonal(id_personal);
+          if (data) {
+            data.password_ = "";
+            reset(data);
+          }
+        } catch (error) {
+          console.error("Error al cargar datos del personal", error);
+        }
+      } else {
+        reset(emptyValues);
+      }
     };
-    fetchPersonalData();
-  }, [id_personal, getPersonal, reset]);
+    fetchData();
+  }, [id_personal, getPersonal, reset, isEditing]);
 
   const onSubmit = async (data) => {
     try {
-      if (id_personal) {
+      delete data.confirmPassword;
+
+      if (isEditing) {
+        if (!data.password_) delete data.password_;
         await updatePersonal(id_personal, data);
+
         Swal.fire({
           icon: "success",
-          title: "Personal actualizado correctamente",
+          title: "Personal actualizado",
           showConfirmButton: false,
           timer: 1500,
         });
       } else {
+        if (!data.password_) {
+          throw new Error(
+            "La contraseña es obligatoria para registrar nuevo personal."
+          );
+        }
+
         await createPersonal(data);
+
         Swal.fire({
           icon: "success",
-          title: "Personal registrado correctamente",
+          title: "Personal registrado",
           showConfirmButton: false,
           timer: 1500,
         });
       }
-      reset(emptyValues);
+
+      onSuccess?.();
+      onClose?.();
     } catch (error) {
       Swal.fire({
         icon: "error",
         title: "Error al guardar los datos",
+        text:
+          error?.response?.data?.message ||
+          error.message ||
+          "Intente nuevamente",
         showConfirmButton: false,
-        timer: 1500,
+        timer: 2000,
       });
       console.error("Error al guardar los datos", error);
     }
   };
 
-  // --- Clases reutilizables ---
+  // Clases reutilizables
   const label = "block text-sm font-semibold text-gray-700 mb-1";
   const baseInput =
     "w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2";
@@ -113,15 +149,17 @@ const FormularioPersonal = ({ id_personal }) => {
   return (
     <div className="max-w-5xl mx-auto bg-white p-8 mt-2 rounded-2xl shadow-md">
       <h2 className="text-2xl font-bold text-[#0159B3] mb-4">
-        {id_personal ? "Editar Personal" : "Registrar Personal"}
+        {isEditing ? "Editar Personal" : "Registrar Personal"}
       </h2>
+
       <p className="text-gray-500 text-sm mb-6">
         Complete el formulario | (*) Campos obligatorios
       </p>
+
       <hr className="mb-6 border-gray-300" />
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        {/* 🔹 Información básica */}
+        {/* Información personal */}
         <section>
           <h3 className="text-lg font-semibold text-gray-800 mb-3">
             Información personal
@@ -184,14 +222,13 @@ const FormularioPersonal = ({ id_personal }) => {
                 <p className={errorText}>{errors.role_id.message}</p>
               )}
             </div>
-
-            {/* Título */}
           </div>
         </section>
 
-        {/* 🔹 Contacto */}
+        {/* Contacto */}
         <section>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Email */}
             <div>
               <label htmlFor="email" className={label}>
                 Correo electrónico *
@@ -209,6 +246,7 @@ const FormularioPersonal = ({ id_personal }) => {
               )}
             </div>
 
+            {/* Celular */}
             <div>
               <label htmlFor="cell_number" className={label}>
                 Celular *
@@ -225,6 +263,7 @@ const FormularioPersonal = ({ id_personal }) => {
               )}
             </div>
 
+            {/* Teléfono */}
             <div>
               <label htmlFor="phone" className={label}>
                 Teléfono
@@ -236,6 +275,7 @@ const FormularioPersonal = ({ id_personal }) => {
               />
             </div>
 
+            {/* Dirección */}
             <div>
               <label htmlFor="address_" className={label}>
                 Dirección *
@@ -255,7 +295,7 @@ const FormularioPersonal = ({ id_personal }) => {
           </div>
         </section>
 
-        {/* 🔹 Ubicación */}
+        {/* Ubicación */}
         <section>
           <h3 className="text-lg font-semibold text-gray-800 mb-3">
             Ubicación
@@ -311,20 +351,29 @@ const FormularioPersonal = ({ id_personal }) => {
           </div>
         </section>
 
-        {/* 🔹 Contraseña */}
+        {/* Seguridad */}
         <section>
           <h3 className="text-lg font-semibold text-gray-800 mb-3">
             Seguridad
           </h3>
+
+          <p className="text-sm text-gray-500 mb-3">
+            {isEditing
+              ? "Deje los campos en blanco si no desea cambiar la contraseña."
+              : "Ingrese la contraseña para el nuevo usuario."}
+          </p>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Password */}
             <div>
               <label htmlFor="password_" className={label}>
-                Contraseña *
+                Contraseña {isEditing ? "(Opcional)" : "*"}
               </label>
               <input
                 type="password"
                 id="password_"
                 {...register("password_")}
+                autoComplete="new-password"
                 className={`${baseInput} ${
                   errors.password_ ? errorInput : normalInput
                 }`}
@@ -334,9 +383,10 @@ const FormularioPersonal = ({ id_personal }) => {
               )}
             </div>
 
+            {/* Confirm password */}
             <div>
               <label htmlFor="confirmPassword" className={label}>
-                Confirmar contraseña *
+                Confirmar contraseña
               </label>
               <input
                 type="password"
@@ -353,16 +403,8 @@ const FormularioPersonal = ({ id_personal }) => {
           </div>
         </section>
 
-        {/* 🔹 Botón */}
-        <div className="flex justify-end gap-4">
-          <button
-            type="submit"
-            className="px-4 py-2 bg-[#0159B3] text-white rounded-lg shadow-md hover:bg-[#01447a] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-            disabled={!isValid || !isDirty}
-          >
-            <i className="fas fa-save mr-2"></i>
-            Guardar
-          </button>
+        {/* Botones */}
+        <div className="flex justify-end gap-4 pt-4 border-t border-gray-200">
           <button
             type="button"
             onClick={() => reset(emptyValues)}
@@ -370,6 +412,15 @@ const FormularioPersonal = ({ id_personal }) => {
           >
             <i className="fas fa-eraser mr-2"></i>
             Limpiar
+          </button>
+
+          <button
+            type="submit"
+            className="px-4 py-2 bg-[#0159B3] text-white rounded-lg shadow-md hover:bg-[#01447a] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={!isValid || (!isDirty && isEditing)}
+          >
+            <i className="fas fa-save mr-2"></i>
+            Guardar
           </button>
         </div>
       </form>

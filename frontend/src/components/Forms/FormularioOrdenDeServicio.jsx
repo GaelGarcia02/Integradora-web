@@ -3,16 +3,21 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import Swal from "sweetalert2";
+
 import { useServiceOrders } from "../../context/ServiceOrdersContext";
 import { useClients } from "../../context/ClientsContext";
 import { useServices } from "../../context/ServicesContext";
 import { usePersonal } from "../../context/PersonalContext";
 import { useInventory } from "../../context/InventoryContext";
 
+// --- Esquema de Validación ---
 const validationSchema = Yup.object().shape({
   client_id: Yup.string().required("Cliente es obligatorio"),
   service_id: Yup.string().required("Servicio es obligatorio"),
-  personal_id: Yup.string().required("Personal es obligatorio"),
+  personal_ids: Yup.array()
+    .of(Yup.number())
+    .min(1, "Debe asignar al menos a una persona"),
+
   contact_name: Yup.string().required("Nombre de contacto es obligatorio"),
   contact_phone: Yup.string().required("Teléfono de contacto es obligatorio"),
   contact_email: Yup.string()
@@ -47,7 +52,7 @@ const validationSchema = Yup.object().shape({
 const emptyValues = {
   client_id: "",
   service_id: "",
-  personal_id: "",
+  personal_ids: [],
   contact_name: "",
   contact_phone: "",
   contact_email: "",
@@ -62,6 +67,7 @@ const emptyValues = {
   products: [],
 };
 
+// --- Estilos ---
 const label = "block text-sm font-semibold text-gray-700 mb-1";
 const baseInput =
   "w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2";
@@ -93,6 +99,7 @@ const FormularioOrdenDeServicio = ({
     control,
     watch,
     setValue,
+    getValues, // Necesario para leer el array actual
     formState: { errors, isValid, isDirty },
   } = useForm({
     resolver: yupResolver(validationSchema),
@@ -105,6 +112,7 @@ const FormularioOrdenDeServicio = ({
     name: "products",
   });
 
+  // --- Cargar Catálogos ---
   useEffect(() => {
     getClients();
     getServices();
@@ -112,6 +120,7 @@ const FormularioOrdenDeServicio = ({
     getAvailableProducts();
   }, []);
 
+  // --- Cargar Orden (Editar) ---
   useEffect(() => {
     const fetchOrderData = async () => {
       if (id_service_order) {
@@ -119,12 +128,23 @@ const FormularioOrdenDeServicio = ({
         try {
           const orderData = await getServiceOrder(id_service_order);
           if (orderData) {
+            // Formatear fecha
             orderData.scheduled_date = new Date(orderData.scheduled_date)
               .toISOString()
               .split("T")[0];
+
+            // Extraer IDs de personal asignado
+            if (orderData.personal) {
+              orderData.personal_ids = orderData.personal.map(
+                (p) => p.id_personal
+              );
+            } else {
+              orderData.personal_ids = [];
+            }
+
             reset(orderData);
           }
-        } catch {
+        } catch (error) {
           Swal.fire({ icon: "error", title: "Error al cargar la orden" });
         } finally {
           setIsLoading(false);
@@ -136,11 +156,13 @@ const FormularioOrdenDeServicio = ({
     fetchOrderData();
   }, [id_service_order, getServiceOrder, reset]);
 
+  // --- Auto-rellenar ---
   const selectedClientId = watch("client_id");
   const selectedServiceId = watch("service_id");
+  const selectedPersonalIds = watch("personal_ids") || [];
 
   useEffect(() => {
-    if (selectedClientId) {
+    if (selectedClientId && !isEditing) {
       const client = clients.find((c) => c.id_client == selectedClientId);
       if (client) {
         setValue("contact_name", client.contact_name, { shouldValidate: true });
@@ -152,16 +174,47 @@ const FormularioOrdenDeServicio = ({
         });
       }
     }
-  }, [selectedClientId, clients, setValue]);
+  }, [selectedClientId, clients, setValue, isEditing]);
 
   useEffect(() => {
-    if (selectedServiceId) {
+    if (selectedServiceId && !isEditing) {
       const service = services.find((s) => s.id_service == selectedServiceId);
       if (service) {
         setValue("price", service.sale_price, { shouldValidate: true });
       }
     }
-  }, [selectedServiceId, services, setValue]);
+  }, [selectedServiceId, services, setValue, isEditing]);
+
+  // --- Funciones para personal multiple ---
+  const handleAddPersonal = (e) => {
+    const idToAdd = parseInt(e.target.value);
+    if (!idToAdd) return;
+
+    const currentIds = getValues("personal_ids") || [];
+
+    // Evitar duplicados
+    if (!currentIds.includes(idToAdd)) {
+      setValue("personal_ids", [...currentIds, idToAdd], {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+    }
+    // Resetear el select visualmente
+    e.target.value = "";
+  };
+
+  const tecnicosDisponibles = personal.filter((p) => p.role_id !== 1);
+
+  console.log("Técnicos disponibles:", tecnicosDisponibles);
+
+  const handleRemovePersonal = (idToRemove) => {
+    const currentIds = getValues("personal_ids") || [];
+    const newIds = currentIds.filter((id) => id !== idToRemove);
+    setValue("personal_ids", newIds, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+  };
 
   const onSubmit = async (data) => {
     try {
@@ -233,7 +286,6 @@ const FormularioOrdenDeServicio = ({
                 <p className={errorText}>{errors.client_id.message}</p>
               )}
             </div>
-
             <div>
               <label htmlFor="contact_name" className={label}>
                 Nombre Contacto *
@@ -250,7 +302,6 @@ const FormularioOrdenDeServicio = ({
                 <p className={errorText}>{errors.contact_name.message}</p>
               )}
             </div>
-
             <div>
               <label htmlFor="contact_phone" className={label}>
                 Teléfono Contacto *
@@ -267,7 +318,6 @@ const FormularioOrdenDeServicio = ({
                 <p className={errorText}>{errors.contact_phone.message}</p>
               )}
             </div>
-
             <div>
               <label htmlFor="contact_email" className={label}>
                 Email Contacto *
@@ -314,7 +364,6 @@ const FormularioOrdenDeServicio = ({
                 <p className={errorText}>{errors.service_id.message}</p>
               )}
             </div>
-
             <div className="md:col-span-2">
               <label htmlFor="price" className={label}>
                 Precio *
@@ -332,7 +381,6 @@ const FormularioOrdenDeServicio = ({
                 <p className={errorText}>{errors.price.message}</p>
               )}
             </div>
-
             <div>
               <label htmlFor="scheduled_date" className={label}>
                 Fecha *
@@ -348,7 +396,6 @@ const FormularioOrdenDeServicio = ({
                 <p className={errorText}>{errors.scheduled_date.message}</p>
               )}
             </div>
-
             <div>
               <label htmlFor="start_time" className={label}>
                 Hora Inicio *
@@ -364,10 +411,9 @@ const FormularioOrdenDeServicio = ({
                 <p className={errorText}>{errors.start_time.message}</p>
               )}
             </div>
-
             <div>
               <label htmlFor="end_time" className={label}>
-                Hora Fin *
+                Hora Fin
               </label>
               <input
                 type="time"
@@ -383,34 +429,61 @@ const FormularioOrdenDeServicio = ({
           </div>
         </section>
 
-        {/* Personal y detalles */}
+        {/* Detalles y Asignación */}
         <section>
           <h3 className="text-lg font-semibold text-gray-800 mb-3">
             Detalles y Asignación
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Selección de Personal (Múltiple) */}
             <div>
-              <label htmlFor="personal_id" className={label}>
-                Personal Asignado *
-              </label>
+              <label className={label}>Personal Asignado *</label>
+              {/* 1. Select para agregar */}
               <select
-                {...register("personal_id")}
+                onChange={handleAddPersonal}
                 className={`${baseInput} ${
-                  errors.personal_id ? errorInput : normalInput
+                  errors.personal_ids ? errorInput : normalInput
                 }`}
+                defaultValue=""
               >
-                <option value="">Seleccionar personal</option>
-                {personal.map((p) => (
+                <option value="" disabled>
+                  + Asignar técnico...
+                </option>
+
+                {tecnicosDisponibles.map((p) => (
                   <option key={p.id_personal} value={p.id_personal}>
                     {p.name_} {p.last_name}
                   </option>
                 ))}
               </select>
-              {errors.personal_id && (
-                <p className={errorText}>{errors.personal_id.message}</p>
+              {errors.personal_ids && (
+                <p className={errorText}>{errors.personal_ids.message}</p>
               )}
+
+              <div className="mt-3 flex flex-wrap gap-2">
+                {selectedPersonalIds.map((id) => {
+                  const persona = personal.find((p) => p.id_personal === id);
+                  if (!persona) return null;
+                  return (
+                    <span
+                      key={id}
+                      className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-[#0159B3]"
+                    >
+                      {persona.name_} {persona.last_name}
+                      <button
+                        type="button"
+                        onClick={() => handleRemovePersonal(id)}
+                        className="ml-2 text-blue-600 hover:text-blue-800 focus:outline-none"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  );
+                })}
+              </div>
             </div>
 
+            {/* Estado */}
             <div>
               <label htmlFor="state_" className={label}>
                 Estado *
@@ -429,7 +502,7 @@ const FormularioOrdenDeServicio = ({
                 <p className={errorText}>{errors.state_.message}</p>
               )}
             </div>
-
+            {/* Actividades */}
             <div>
               <label htmlFor="activities" className={label}>
                 Actividades *
@@ -445,7 +518,7 @@ const FormularioOrdenDeServicio = ({
                 <p className={errorText}>{errors.activities.message}</p>
               )}
             </div>
-
+            {/* Recomendaciones */}
             <div>
               <label htmlFor="recomendations" className={label}>
                 Recomendaciones *
@@ -475,8 +548,7 @@ const FormularioOrdenDeServicio = ({
               onClick={() => append({ product_id: "", quantity_used: 1 })}
               className="px-4 py-2 bg-blue-100 text-[#0159B3] font-semibold rounded-lg hover:bg-blue-200 transition text-sm"
             >
-              <i className="fas fa-plus mr-2" />
-              Agregar Fila
+              <i className="fas fa-plus mr-2"></i> Agregar Fila
             </button>
           </div>
 
@@ -514,6 +586,7 @@ const FormularioOrdenDeServicio = ({
                   maxParaEsteInput = stockDisponible;
                 }
               }
+
               const unit = selectedProduct ? selectedProduct.unit : "-";
 
               return (
@@ -590,13 +663,12 @@ const FormularioOrdenDeServicio = ({
                       onClick={() => remove(index)}
                       className="px-3 py-2 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 transition"
                     >
-                      <i className="fas fa-trash" />
+                      <i className="fas fa-trash"></i>
                     </button>
                   </div>
                 </div>
               );
             })}
-
             {errors.products && !errors.products.length && (
               <p className={errorText}>{errors.products.message}</p>
             )}
@@ -616,7 +688,7 @@ const FormularioOrdenDeServicio = ({
             className="px-4 py-2 bg-[#0159B3] text-white rounded-lg shadow-md hover:bg-[#01447a] transition disabled:opacity-50"
             disabled={(!isDirty && !isEditing) || !isValid}
           >
-            <i className="fas fa-save mr-2" />
+            <i className="fas fa-save mr-2"></i>
             {isEditing ? "Actualizar Orden" : "Guardar Orden"}
           </button>
         </div>

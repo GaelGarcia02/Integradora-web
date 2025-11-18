@@ -78,17 +78,29 @@ const OrderCard = ({ order, onDelete, onSuccessRefresh }) => {
                 {order.client_name || "Sin Cliente"}
               </span>
             </div>
-            <div className="flex items-center gap-2">
-              <i className="fas fa-hard-hat w-4 text-center text-gray-400"></i>
-              <span className="truncate" title={order.personal_name}>
-                {order.personal_name || "Sin Asignar"}
-              </span>
-            </div>
+
             <div className="flex items-center gap-2 mt-3">
               <i className="fas fa-calendar-alt w-4 text-center text-gray-400"></i>
               <span className="font-semibold">
                 {day} de {month.toLowerCase()}
               </span>
+            </div>
+            <div className="flex items-start gap-2">
+              <i className="fas fa-hard-hat w-4 text-center text-gray-400 mt-1"></i>
+              <div className="flex flex-wrap gap-1">
+                {order.personal_names ? (
+                  order.personal_names.split(", ").map((name, index) => (
+                    <span
+                      key={index}
+                      className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100"
+                    >
+                      {name}
+                    </span>
+                  ))
+                ) : (
+                  <span className="text-gray-400 italic">Sin Asignar</span>
+                )}
+              </div>
             </div>
           </div>
         </button>

@@ -17,8 +17,10 @@ export const createServiceOrderRequest = async (serviceOrder) => {
 };
 
 // Actualizar un service order existente
-export const updateServiceOrderRequest = async (id, serviceOrder) =>
-  await axios.put(`${route}/service-orders/${id}`, serviceOrder);
+export const updateServiceOrderRequest = async (id, serviceOrder) => {
+  console.log("Datos enviados para actualización:", serviceOrder);
+  return await axios.put(`${route}/service-orders/${id}`, serviceOrder);
+};
 
 // Eliminar un service order
 export const deleteServiceOrderRequest = async (id) =>

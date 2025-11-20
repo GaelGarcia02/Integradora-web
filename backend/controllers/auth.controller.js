@@ -27,6 +27,13 @@ export const login = async (req, res) => {
 
     const user = result[0];
 
+    if (user.role_id !== 1) {
+      return res.status(403).json({
+        message:
+          "Acceso denegado. Solo los administradores pueden iniciar sesión.",
+      });
+    }
+
     console.log(user.id_personal);
     console.log(user.role_id);
 

@@ -27,7 +27,7 @@ const validationSchema = Yup.object().shape({
     .typeError("Fecha inválida")
     .required("Fecha es obligatoria"),
   start_time: Yup.string().required("Hora de inicio es obligatoria"),
-  end_time: Yup.string().required("Hora de fin es obligatoria"),
+  end_time: Yup.string(),
   price: Yup.number()
     .typeError("Debe ser un número")
     .min(0, "Precio no válido")

@@ -24,6 +24,7 @@ export const getServiceOrders = async (req, res) => {
 //* Get a service order by ID
 export const getServiceOrder = async (req, res) => {
   try {
+    // 1. Obtener la orden principal
     const [orderResult] = await pool.query(
       `SELECT 
           so.*,
@@ -40,16 +41,17 @@ export const getServiceOrder = async (req, res) => {
       return res.status(404).json({ message: "Service order not found" });
     }
 
+    // 2. Obtener los productos
     const [productsResult] = await pool.query(
       `SELECT 
-          p.name_ as product_name,
-          sop.quantity_used,
-          c.unit as product_unit,
-          sop.product_id
-       FROM service_order_products sop
-       JOIN products p ON sop.product_id = p.id_product
-       JOIN categories c ON p.category_id = c.id_category
-       WHERE sop.service_order_id = ?`,
+        p.name_ as product_name,
+        sop.quantity_used,
+        c.unit as product_unit,
+        sop.product_id
+      FROM service_order_products sop
+      JOIN products p ON sop.product_id = p.id_product
+      JOIN categories c ON p.category_id = c.id_category
+      WHERE sop.service_order_id = ?`,
       [req.params.id]
     );
 
@@ -66,7 +68,7 @@ export const getServiceOrder = async (req, res) => {
     const serviceOrder = {
       ...orderResult[0],
       products: productsResult,
-      personal: personalResult, // Array de personal asignado
+      personal: personalResult,
     };
 
     res.json(serviceOrder);
@@ -92,7 +94,7 @@ export const createServiceOrder = async (req, res) => {
     files,
     state_,
     products,
-    personal_ids, // Array de IDs de personal [1, 2]
+    personal_ids,
   } = req.body;
 
   const connection = await pool.getConnection();

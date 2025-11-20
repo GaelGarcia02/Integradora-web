@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useServiceOrders } from "../context/ServiceOrdersContext";
 
-// --- Sub-componentes para el diseño ---
-
-// 1. Bloque de contenido principal (para Actividades, Materiales, etc.)
+// Contenido principal
 const ContentBlock = ({ title, icon, children }) => (
   <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
     <h3 className="text-md font-semibold text-gray-800 p-4 border-b flex items-center gap-3">
@@ -14,7 +12,7 @@ const ContentBlock = ({ title, icon, children }) => (
   </div>
 );
 
-// 2. Bloque de información (para la barra lateral)
+// Bloque de información
 const InfoBlock = ({ title, icon, children }) => (
   <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
     <h3 className="text-sm font-semibold text-gray-700 p-3 border-b flex items-center gap-2">
@@ -25,7 +23,7 @@ const InfoBlock = ({ title, icon, children }) => (
   </div>
 );
 
-// 3. Fila de datos (para la barra lateral)
+// Fila de datos
 const InfoRow = ({ label, value }) => (
   <div>
     <p className="text-xs text-gray-500 uppercase font-medium">{label}</p>
@@ -33,7 +31,7 @@ const InfoRow = ({ label, value }) => (
   </div>
 );
 
-// --- Componente Principal ---
+// Componente Principal
 
 const OrderDetailView = ({ orderId }) => {
   const { getServiceOrder } = useServiceOrders();
@@ -41,8 +39,6 @@ const OrderDetailView = ({ orderId }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // El bug del "parpadeo" se arregló en el Contexto (quitando setLoading),
-    // así que este estado de carga local ahora funciona de forma independiente.
     setLoading(true);
     const fetchOrder = async () => {
       try {
@@ -81,7 +77,7 @@ const OrderDetailView = ({ orderId }) => {
 
   return (
     <div className="flex flex-col md:flex-row gap-6 bg-gray-50 p-4">
-      {/* --- COLUMNA IZQUIERDA (Contenido Principal) --- */}
+      {/* Columna Izquierda */}
       <div className="flex-1 space-y-6">
         <ContentBlock title="Actividades Realizadas" icon="fa-tasks">
           <p className="text-sm text-gray-700 whitespace-pre-wrap">
@@ -137,7 +133,7 @@ const OrderDetailView = ({ orderId }) => {
         </ContentBlock>
       </div>
 
-      {/* --- COLUMNA DERECHA (Barra Lateral de Info) --- */}
+      {/* Columna derecha */}
       <div className="w-full md:w-72 lg:w-80 space-y-4">
         <InfoBlock title="Estado" icon="fa-flag">
           <span
@@ -149,8 +145,26 @@ const OrderDetailView = ({ orderId }) => {
 
         <InfoBlock title="Detalles del Servicio" icon="fa-info-circle">
           <InfoRow label="Cliente" value={order.client_name} />
-          <InfoRow label="Personal Asignado" value={order.personal_name} />
           <InfoRow label="Servicio" value={order.service_name} />
+          <div className="mt-3 pt-2 border-t border-gray-100">
+            <p className="text-xs text-gray-500 uppercase font-medium mb-2">
+              Personal Asignado
+            </p>
+            {order.personal && order.personal.length > 0 ? (
+              <div className="flex flex-wrap gap-2">
+                {order.personal.map((p) => (
+                  <span
+                    key={p.id_personal}
+                    className="inline-flex items-center px-2.5 py-1 rounded text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100"
+                  >
+                    {p.full_name}
+                  </span>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-gray-500 italic">Sin Asignar</p>
+            )}
+          </div>
         </InfoBlock>
 
         <InfoBlock title="Horario y Precio" icon="fa-calendar-alt">

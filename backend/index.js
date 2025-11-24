@@ -15,6 +15,7 @@ import servicesOrdersRoutes from "./routes/services_orders.routes.js";
 import taskRoutes from "./routes/task.routes.js";
 import authRoutes from "./routes/auth.routes.js";
 import rolesRoutes from "./routes/role.routes.js";
+import servicesOrdersRoutesFull from "./routes/serviceOrdersFull.routes.js";
 
 const app = express();
 // 8081 incluir para la conexion con el frontend y la aplicacion movil
@@ -36,10 +37,7 @@ app.use("/api", suppliersRoutes);
 app.use("/api", contactsRoutes);
 app.use("/api/products", productsRoutes);
 app.use("/api", servicesRoutes);
-app.use("/api", servicesOrdersRoutes);
-app.use("/api", rolesRoutes);
-app.use("/api", taskRoutes);
-app.use("/api", authRoutes);
-
+app.use("/api", servicesOrdersRoutesFull); 
+app.use("/api/auth", authRoutes); 
 app.listen(PORT);
 console.log("Server is running on port", PORT);
